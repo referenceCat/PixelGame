@@ -1,4 +1,4 @@
-#include "../include/UIGraphicEngine.h"
+#include "UIGraphicEngine.h"
 
 void UIGraphicEngine::draw() {
     al_draw_filled_rectangle(10, 10, 100, 100, al_map_rgb(255, 255, 255));

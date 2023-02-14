@@ -1,4 +1,4 @@
-#include "../include/Environment.h"
+#include "Environment.h"
 
 Hitbox * Environment::getEnvHitboxes() {
     Hitbox hitboxes [envRectsNum];

@@ -3,9 +3,9 @@
 
 #include <cstdio>
 #include <allegro5/allegro.h>
-#include "../include/GameEngine.h"
-#include "../include/GraphicEngine.h"
-#include "../include/UIGraphicEngine.h"
+#include "src/logic/GameEngine.h"
+#include "src/graphics/GraphicEngine.h"
+#include "src/ui/UIGraphicEngine.h"
 #include <allegro5/allegro_image.h>
 
 #endif //PIXELGAME_MAIN_H

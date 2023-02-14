@@ -1,4 +1,4 @@
-#include "../include/GraphicEngine.h"
+#include "GraphicEngine.h"
 
 void GraphicEngine::draw() {
     al_clear_to_color(al_map_rgb(200, 150, 100));

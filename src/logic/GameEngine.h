@@ -2,8 +2,8 @@
 #define PIXELGAME_GAMEENGINE_H
 #include <string>
 #include "Environment.h"
-#include "GraphicEngine.h"
-#include "UIGraphicEngine.h"
+#include "../graphics/GraphicEngine.h"
+#include "../ui/UIGraphicEngine.h"
 
 class GameEngine {
 private:

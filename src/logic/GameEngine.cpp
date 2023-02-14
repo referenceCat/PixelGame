@@ -1,4 +1,4 @@
-#include "../include/GameEngine.h"
+#include "GameEngine.h"
 void GameEngine::update() {
     updateUI();
     if (!isPaused()) updateGameLogic();

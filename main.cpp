@@ -1,4 +1,4 @@
-#include "../include/main.h"
+#include "main.h"
 const float FPS = 60, UPS = 5;
 
 int main(int argc, char *argv[])
