@@ -1,18 +1,28 @@
 #include "../include/Environment.h"
 
-Hitbox [] Environment::getEnvHitboxes() {
-    Hitbox[envRects] hitboxes;
+Hitbox * Environment::getEnvHitboxes() {
+    Hitbox hitboxes [envRectsNum];
     for (int i = 0; i < envRectsNum; i++) {
-        hitboxes[i] = Hitbox(envRects[i].x - 0.5, envRects[i].y - 0.5, envRects[i].w, envRects[i].h);
+        struct Hitbox hitbox;
+        hitbox.x = envRects[i].x - 0.5;
+        hitbox.y = envRects[i].y - 0.5;
+        hitbox.w = envRects[i].w;
+        hitbox.h = envRects[i].h;
     }
     return hitboxes;
 }
 
-int Environment::setSolid(int x, int y) {
-    if (getSolid(x, y)) return 0;
-    envRects[envRectsNum] = EnvironmentRect(x, y, 1, 1);
-    envRectsNum += 1;
-    return 1;
+void Environment::setSolid(int x, int y) {
+    if (!getSolid(x, y)) {
+        EnvironmentRect rect;
+        rect.x = x;
+        rect.y = y;
+        rect.w = 1;
+        rect.h = 1;
+        envRects[envRectsNum] = rect;
+        envRectsNum += 1;
+    }
+
 }
 
 int Environment::getSolid(int x, int y) {

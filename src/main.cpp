@@ -1,16 +1,9 @@
-#include <cstdio>
-#include <allegro5/allegro.h>
-#include "../include/GameEngine.h"
-#include "../include/GraphicEngine.h"
-#include "../include/UIGraphicEngine.h"
-const float FPS = 60, UPS = 60;
-
+#include "../include/main.h"
+const float FPS = 60, UPS = 5;
 
 int main(int argc, char *argv[])
 {
-    GraphicEngine graphicEngine = GraphicEngine();
-    UIGraphicEngine UIgraphicEngine = UIGraphicEngine();
-    GameEngine gameEngine = GameEngine();
+    al_init_image_addon();
     ALLEGRO_DISPLAY *display = NULL;
     ALLEGRO_EVENT_QUEUE *event_queue = NULL;
     ALLEGRO_TIMER *redraw_timer = NULL;
@@ -39,7 +32,7 @@ int main(int argc, char *argv[])
     }
 
     // Create the display
-    display = al_create_display(640, 480);
+    display = al_create_display(1920, 1080);
     if (!display) {
         fprintf(stderr, "Failed to create display.\n");
         return 1;
@@ -52,18 +45,25 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    // Create the keyboard
+    al_install_keyboard();
+
     // Register event sources
+    al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_display_event_source(display));
     al_register_event_source(event_queue, al_get_timer_event_source(redraw_timer));
     al_register_event_source(event_queue, al_get_timer_event_source(update_timer));
 
-    // Display a black screen
-    al_clear_to_color(al_map_rgb(0, 0, 0));
-    al_flip_display();
-
     // Start the timer
     al_start_timer(redraw_timer);
     al_start_timer(update_timer);
+
+    GraphicEngine graphicEngine = GraphicEngine();
+    graphicEngine.init(al_get_display_width(display), al_get_display_height(display));
+    UIGraphicEngine uiGraphicEngine = UIGraphicEngine();
+    uiGraphicEngine.init(al_get_display_width(display), al_get_display_height(display));
+    GameEngine gameEngine = GameEngine();
+    gameEngine.init(graphicEngine, uiGraphicEngine);
 
     // GameEngine loop
     while (running) {
@@ -80,10 +80,22 @@ int main(int argc, char *argv[])
         if (get_event) {
             switch (event.type) {
                 case ALLEGRO_EVENT_TIMER:
-                    redraw = true;
+                    if (event.timer.source == redraw_timer) redraw = true;
+                    else if (event.timer.source == update_timer) gameEngine.update();
                     break;
                 case ALLEGRO_EVENT_DISPLAY_CLOSE:
                     running = false;
+                    break;
+                case ALLEGRO_EVENT_KEY_DOWN:
+                    if (event.keyboard.keycode == ALLEGRO_KEY_D) {
+                        graphicEngine.moveCamera(graphicEngine.getCameraX() + 10, graphicEngine.getCameraY());
+                    } else if (event.keyboard.keycode == ALLEGRO_KEY_A) {
+                        graphicEngine.moveCamera(graphicEngine.getCameraX() - 10, graphicEngine.getCameraY());
+                    } else if (event.keyboard.keycode == ALLEGRO_KEY_W) {
+                        graphicEngine.moveCamera(graphicEngine.getCameraX(), graphicEngine.getCameraY() + 10);
+                    } else if (event.keyboard.keycode == ALLEGRO_KEY_S) {
+                        graphicEngine.moveCamera(graphicEngine.getCameraX(), graphicEngine.getCameraY() - 10);
+                    }
                     break;
                 default:
                     fprintf(stderr, "Unsupported event received: %d\n", event.type);
@@ -95,6 +107,8 @@ int main(int argc, char *argv[])
         if (redraw && al_is_event_queue_empty(event_queue)) {
             // Redraw
             graphicEngine.draw();
+            uiGraphicEngine.draw();
+            al_flip_display();
             redraw = false;
         }
     }

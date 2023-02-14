@@ -1,12 +1,12 @@
-//
-// Created by Yuriy Buyanov on 13/02/2023.
-//
-
 #ifndef PIXELGAME_UIGRAPHICENGINE_H
 #define PIXELGAME_UIGRAPHICENGINE_H
-
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
 
 class UIGraphicEngine {
+    int displayWidth, displayHeight;
+public:
+    void init(int displayWidth, int displayHeight);
     void draw();
 };
 

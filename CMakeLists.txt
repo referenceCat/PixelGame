@@ -5,7 +5,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES
         src/main.cpp
-        src/GraphicEngine.cpp)
+        src/GraphicEngine.cpp
+        src/UIGraphicEngine.cpp
+        src/GameEngine.cpp
+        src/Environment.cpp)
 add_executable(PixelGame ${SOURCE_FILES})
 
 INCLUDE_DIRECTORIES(  /usr/local/Cellar/allegro/5.2.8.0_2/include )

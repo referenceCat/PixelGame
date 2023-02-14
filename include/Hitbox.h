@@ -2,10 +2,9 @@
 #define PIXELGAME_HITBOX_H
 
 
-class Hitbox {
+struct Hitbox {
     // top left corner and size
     double x, y, w, h;
-    Hitbox(double x, double y, double w, double h);
 
 };
 
