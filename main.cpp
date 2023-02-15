@@ -65,6 +65,13 @@ int main(int argc, char *argv[])
     GameEngine gameEngine = GameEngine();
     gameEngine.init(graphicEngine, uiGraphicEngine);
 
+    // GE test
+    graphicEngine.addImageSprite(0, 0, 200, 240, 135, 0, "../data/test_layer_4.png");
+    graphicEngine.addImageSprite(0, 0, 100, 240, 135, 0, "../data/test_layer_1.png");
+    graphicEngine.addImageSprite(0, 0, 107, 240, 135, 0, "../data/test_layer_3.png");
+    graphicEngine.addImageSprite(0, 0, 300, 240, 135, 0, "../data/test_layer_5.png");
+    graphicEngine.addImageSprite(0, 0, 100, 240, 135, -1, "../data/test_layer_2.png");
+
     // GameEngine loop
     while (running) {
         ALLEGRO_EVENT event;
@@ -95,6 +102,10 @@ int main(int argc, char *argv[])
                         graphicEngine.moveCamera(graphicEngine.getCameraX(), graphicEngine.getCameraY() + 10);
                     } else if (event.keyboard.keycode == ALLEGRO_KEY_S) {
                         graphicEngine.moveCamera(graphicEngine.getCameraX(), graphicEngine.getCameraY() - 10);
+                    } else if (event.keyboard.keycode == ALLEGRO_KEY_EQUALS and graphicEngine.getPixelsToUnitRatio() < 8) {
+                        graphicEngine.setPixelsToUnitRatio(graphicEngine.getPixelsToUnitRatio() + 1);
+                    } else if (event.keyboard.keycode == ALLEGRO_KEY_MINUS and graphicEngine.getPixelsToUnitRatio() > 2) {
+                        graphicEngine.setPixelsToUnitRatio(graphicEngine.getPixelsToUnitRatio() - 1);
                     }
                     break;
                 default:

@@ -4,7 +4,12 @@
 #include <allegro5/allegro_primitives.h>
 
 class UIGraphicEngine {
+private:
+    void operator=(const UIGraphicEngine&);
+
+private:
     int displayWidth, displayHeight;
+
 public:
     void init(int displayWidth, int displayHeight);
     void draw();

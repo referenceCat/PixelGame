@@ -3,22 +3,28 @@
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
+#include <list>
+#include <iterator>
+#include "../logic/environment/Chunk.h"
 
 
 class GraphicEngine {
 private:
-    double MAIN_LAYER_Z = 100, parallax_x = 1, parallax_y = 0.5;
-    double cameraX = 0, cameraY = 0, pixelsToUnitRatio = 8;
+    void operator=(const GraphicEngine&);
+
+private:
+    double MAIN_LAYER_Z = 100, parallax_x = 0.5, parallax_y = 0.1;
+    double cameraX = 0, cameraY = 0, pixelsToUnitRatio = 2;
     int displayWidth, displayHeight;
 
     struct Sprite {
         int id;
         ALLEGRO_BITMAP* bitmap;
-        double x, y, z, w, h;
+        double x, y, z, w, h, priority;
     };
 
-    int isSpriteIdEmpty[100];
-    struct Sprite sprites[100];
+    int new_id = 0;
+    std::list<Sprite> sprites;
 
 private:
     Sprite getSprite(int id);
@@ -50,13 +56,15 @@ public:
 
     void drawRect(double x, double y, double w, double h);
 
-    int addSprite(ALLEGRO_BITMAP* bitmap, double x, double y, double z, double w, double h);
+    int addSprite(ALLEGRO_BITMAP* bitmap, double x, double y, double z, double w, double h, double priority);
 
     void deleteSprite(int id);
 
-    int addRectSprite(double x, double y, double z, double w, double h);
+    int addRectSprite(double x, double y, double z, double w, double h, double priority);
 
-    int addImageSprite(double x, double y, double z, double w, double h, char *name);
+    int addImageSprite(double x, double y, double z, double w, double h, double priority, char *name);
+
+    int addChunkSprite(Chunk& chunk, int chunkX, int chunkY);
 };
 
 #endif //PIXELGAME_GRAPHICENGINE_H
