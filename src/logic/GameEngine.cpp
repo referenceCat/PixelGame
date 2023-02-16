@@ -76,7 +76,6 @@ void GameEngine::rightButtonRealise() {
 }
 
 void GameEngine::zoomInButtonClick() {
-    printf("@");
     zoomInKeyPressed = 1;
 }
 

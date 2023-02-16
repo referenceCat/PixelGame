@@ -20,7 +20,6 @@ void UIEventManager::keyCLick(int keyId) {
             gameEngine->rightButtonClick();
             break;
         case ALLEGRO_KEY_EQUALS:
-            printf("eq");
             gameEngine->zoomInButtonClick();
             break;
         case ALLEGRO_KEY_MINUS:
