@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
     }
 
     // Create the display
+    // al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
     display = al_create_display(1920, 1080);
     if (!display) {
         fprintf(stderr, "Failed to create display.\n");
@@ -67,11 +68,6 @@ int main(int argc, char *argv[])
     UIEventManager uiEventManager = UIEventManager(gameEngine);
 
     // GE test
-    graphicEngine.addImageSprite(0, 0, 200, 240, 135, 0, "../data/test_layer_4.png");
-    graphicEngine.addImageSprite(0, 0, 100, 240, 135, 0, "../data/test_layer_1.png");
-    graphicEngine.addImageSprite(0, 0, 107, 240, 135, 0, "../data/test_layer_3.png");
-    graphicEngine.addImageSprite(0, 0, 300, 240, 135, 0, "../data/test_layer_5.png");
-    graphicEngine.addImageSprite(0, 0, 100, 240, 135, -1, "../data/test_layer_2.png");
 
     // GameEngine loop
     while (running) {

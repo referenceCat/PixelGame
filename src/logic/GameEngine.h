@@ -11,7 +11,7 @@
  class GameEngine {
 private:
     int upKeyPressed = 0, downKeyPressed = 0, leftKeyPressed = 0, rightKeyPressed = 0, zoomInKeyPressed = 0, zoomOutKeyPressed = 0;
-    double cameraX = 0, cameraY = 0, scale = 4, cameraMovementSpeed = 20, cameraRescaleSpeed = 1.05, maxScale = 8, minScale = 1;
+    double cameraX = 0, cameraY = 0, scale = 4, cameraMovementSpeed = 20, cameraRescaleSpeed = 1.05, maxScale = 8, minScale = 2;
     void operator=(const GameEngine&);
 
 private:

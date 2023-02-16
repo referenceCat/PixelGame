@@ -4,7 +4,9 @@ void GraphicEngine::draw() {
     al_set_target_bitmap(al_get_backbuffer(al_get_current_display()));
     al_clear_to_color(al_map_rgb(200, 150, 100));
     // drawRect(200, 200, 150, 150);
+    al_hold_bitmap_drawing(true);
     for (Sprite sprite: sprites) drawSprite(sprite);
+    al_hold_bitmap_drawing(false);
 }
 
 void GraphicEngine::init(int displayWidth, int displayHeight) {
