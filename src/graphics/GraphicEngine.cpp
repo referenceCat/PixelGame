@@ -116,13 +116,14 @@ void GraphicEngine::drawSprite(Sprite sprite) {
 }
 
 int  GraphicEngine::addChunkSprite(Chunk& chunk, int chunkX, int chunkY) {
-    ALLEGRO_BITMAP* bitmap = al_create_bitmap(Chunk::SIZE, Chunk::SIZE);
+    ALLEGRO_BITMAP* bitmap = al_create_bitmap(CHUNK_SIZE, CHUNK_SIZE);
     al_set_target_bitmap(bitmap);
-    Material materialMap[Chunk::SIZE][Chunk::SIZE];
+    Material materialMap[CHUNK_SIZE][CHUNK_SIZE];
     chunk.getMaterialMap(materialMap);
-    for (int i = 0; i < Chunk::SIZE; i++) for (int j = 0; j < Chunk::SIZE; j++) {
+    for (int i = 0; i < CHUNK_SIZE; i++) for (int j = 0; j < CHUNK_SIZE; j++) {
         // al_put_pixel(j, Chunk::SIZE - 1 - i, al_map_rgb(255 * (chunkX - j), 0, 255 * (chunkY - i)));
-        if (materialMap[i][j].id != 0) al_put_pixel(j, Chunk::SIZE - 1 - i, al_map_rgb(100, 100, 100));
+        if (materialMap[i][j].id == 1) al_put_pixel(j, CHUNK_SIZE - 1 - i, al_map_rgb(100, 100, 100));
+        else if (materialMap[i][j].id == 2) al_put_pixel(j, CHUNK_SIZE - 1 - i, al_map_rgb(200, 0, 0));
     }
-    return addSprite(bitmap, chunkX * Chunk::SIZE - 0.5, chunkY * Chunk::SIZE - 0.5, MAIN_LAYER_Z, Chunk::SIZE, Chunk::SIZE, 100);
+    return addSprite(bitmap, chunkX * CHUNK_SIZE - 0.5, chunkY * CHUNK_SIZE - 0.5, MAIN_LAYER_Z, CHUNK_SIZE, CHUNK_SIZE, 100);
 }

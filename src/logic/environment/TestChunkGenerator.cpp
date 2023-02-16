@@ -1,11 +1,13 @@
 #include "TestChunkGenerator.h"
 
 void TestChunkGenerator::generateChunk(int x, int y, Chunk &chunk) {
-    Material materialMap[Chunk::SIZE][Chunk::SIZE];
+    Material materialMap[CHUNK_SIZE][CHUNK_SIZE];
     Material air{0};
-    Material stone{1};
-    for (int i = 0; i < Chunk::SIZE; i++) for (int j = 0; j < Chunk::SIZE; j++) {
-            materialMap[i][j] = (i < 100 && j < 100 && i >= 28 && j >= 28) ? stone : air;
+    Material chunkMain{1};
+    Material chunkBorder{2};
+    if (y > WORLD_HEIGHT_IN_CHUNKS / 2) for (int i = 0; i < CHUNK_SIZE; i++) for (int j = 0; j < CHUNK_SIZE; j++) {materialMap[i][j] = air;}
+    else for (int i = 0; i < CHUNK_SIZE; i++) for (int j = 0; j < CHUNK_SIZE; j++) {
+            materialMap[i][j] = (i < 126 && j < 126 && i >= 2 && j >= 2) ? chunkMain : chunkBorder;
     }
     chunk.applyMaterialMap(materialMap);
 }

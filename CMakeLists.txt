@@ -6,12 +6,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(SOURCE_FILES
         main.cpp
         src/graphics/GraphicEngine.cpp
-        src/ui/UIGraphicEngine.cpp
+        src/ui/graphics/GUIEngine.cpp
         src/logic/GameEngine.cpp
         src/logic/environment/Environment.cpp
         src/logic/environment/TestChunkGenerator.cpp
         src/logic/environment/ChunkGenerator.h
-        src/logic/environment/Chunk.cpp)
+        src/logic/environment/Chunk.cpp src/logic/environment/constans.h src/ui/UIEventManager.cpp src/ui/UIEventManager.h)
 add_executable(PixelGame ${SOURCE_FILES})
 
 INCLUDE_DIRECTORIES(  /usr/local/Cellar/allegro/5.2.8.0_2/include )

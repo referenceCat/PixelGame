@@ -6,6 +6,7 @@
 #include <list>
 #include <iterator>
 #include "../logic/environment/Chunk.h"
+#include "../logic/environment/constans.h"
 
 
 class GraphicEngine {
@@ -14,7 +15,7 @@ private:
 
 private:
     double MAIN_LAYER_Z = 100, parallax_x = 0.5, parallax_y = 0.1;
-    double cameraX = 0, cameraY = 0, pixelsToUnitRatio = 2;
+    double cameraX = WORLD_WIDTH_IN_UNITS / 2, cameraY = WORLD_HEIGHT_IN_UNITS / 2, pixelsToUnitRatio = 2;
     int displayWidth, displayHeight;
 
     struct Sprite {

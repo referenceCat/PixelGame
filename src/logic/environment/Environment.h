@@ -3,11 +3,9 @@
 #include "Chunk.h"
 #include "ChunkGenerator.h"
 
-class Environment {
-private:
-    const static int wInChunks = 2, hInChunks = 2;
-    int generatedChunks[hInChunks][wInChunks];
-    Chunk chunks[hInChunks][wInChunks];
+class Environment {private:
+    Chunk chunks[WORLD_HEIGHT_IN_CHUNKS][WORLD_WIDTH_IN_CHUNKS];
+    int generatedChunks[WORLD_HEIGHT_IN_CHUNKS][WORLD_WIDTH_IN_CHUNKS];
 
 public:
         Chunk& getChunk(int x, int y);

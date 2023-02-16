@@ -1,5 +1,5 @@
 #include "main.h"
-const float FPS = 60, UPS = 5;
+const float FPS = 60, UPS = 60;
 
 int main(int argc, char *argv[])
 {
@@ -60,10 +60,11 @@ int main(int argc, char *argv[])
 
     GraphicEngine graphicEngine = GraphicEngine();
     graphicEngine.init(al_get_display_width(display), al_get_display_height(display));
-    UIGraphicEngine uiGraphicEngine = UIGraphicEngine();
+    GUIEngine uiGraphicEngine = GUIEngine();
     uiGraphicEngine.init(al_get_display_width(display), al_get_display_height(display));
     GameEngine gameEngine = GameEngine();
     gameEngine.init(graphicEngine, uiGraphicEngine);
+    UIEventManager uiEventManager = UIEventManager(gameEngine);
 
     // GE test
     graphicEngine.addImageSprite(0, 0, 200, 240, 135, 0, "../data/test_layer_4.png");
@@ -94,19 +95,10 @@ int main(int argc, char *argv[])
                     running = false;
                     break;
                 case ALLEGRO_EVENT_KEY_DOWN:
-                    if (event.keyboard.keycode == ALLEGRO_KEY_D) {
-                        graphicEngine.moveCamera(graphicEngine.getCameraX() + 10, graphicEngine.getCameraY());
-                    } else if (event.keyboard.keycode == ALLEGRO_KEY_A) {
-                        graphicEngine.moveCamera(graphicEngine.getCameraX() - 10, graphicEngine.getCameraY());
-                    } else if (event.keyboard.keycode == ALLEGRO_KEY_W) {
-                        graphicEngine.moveCamera(graphicEngine.getCameraX(), graphicEngine.getCameraY() + 10);
-                    } else if (event.keyboard.keycode == ALLEGRO_KEY_S) {
-                        graphicEngine.moveCamera(graphicEngine.getCameraX(), graphicEngine.getCameraY() - 10);
-                    } else if (event.keyboard.keycode == ALLEGRO_KEY_EQUALS and graphicEngine.getPixelsToUnitRatio() < 8) {
-                        graphicEngine.setPixelsToUnitRatio(graphicEngine.getPixelsToUnitRatio() + 1);
-                    } else if (event.keyboard.keycode == ALLEGRO_KEY_MINUS and graphicEngine.getPixelsToUnitRatio() > 2) {
-                        graphicEngine.setPixelsToUnitRatio(graphicEngine.getPixelsToUnitRatio() - 1);
-                    }
+                    uiEventManager.keyCLick(event.keyboard.keycode);
+                    break;
+                case ALLEGRO_EVENT_KEY_UP:
+                    uiEventManager.keyRealise(event.keyboard.keycode);
                     break;
                 default:
                     fprintf(stderr, "Unsupported event received: %d\n", event.type);

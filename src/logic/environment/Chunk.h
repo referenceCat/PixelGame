@@ -2,6 +2,7 @@
 #define PIXELGAME_CHUNK_H
 #include "Material.h"
 #include <list>
+#include "constans.h"
 
 class Chunk {
 private:
@@ -16,11 +17,11 @@ private:
     std::list<MaterialRect> materialRects;
 
 public:
-    const static int SIZE = 128;
     Chunk();
     Material getMaterial(int x, int y);
     void getMaterialMap(Material materialMapPointer[][128]);
-    void applyMaterialMap(Material materialMap [SIZE][SIZE]);
+    void applyMaterialMap(Material materialMap [CHUNK_SIZE][CHUNK_SIZE]);
+    void clear();
 };
 
 
