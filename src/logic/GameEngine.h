@@ -4,7 +4,7 @@
 #include "../logic/environment/Environment.h"
 #include "../graphics/GraphicEngine.h"
 #include "../ui/graphics/GUIEngine.h"
-#include "../logic/environment/TestChunkGenerator.h"
+#include "environment/Chunks/TestChunkGenerator.h"
 
 #include "math.h"
 

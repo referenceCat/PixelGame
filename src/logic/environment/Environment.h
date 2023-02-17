@@ -1,7 +1,7 @@
 #ifndef PIXELGAME_ENVIRONMENT_H
 #define PIXELGAME_ENVIRONMENT_H
-#include "Chunk.h"
-#include "ChunkGenerator.h"
+#include "Chunks/Chunk.h"
+#include "Chunks/ChunkGenerator.h"
 
 class Environment {private:
     Chunk chunks[WORLD_HEIGHT_IN_CHUNKS][WORLD_WIDTH_IN_CHUNKS];

@@ -15,15 +15,15 @@ void GameEngine::init(GraphicEngine &graphicEngine, GUIEngine &uiGraphicEngine) 
     environment.generateChunk(0, 0, testChunkGenerator);
     graphicEngine.addChunkSprite(environment.getChunk(0, 0), 0, 0);
 
-    for (int i = 0; i < WORLD_HEIGHT_IN_CHUNKS / 2 + 5; i++) for (int j = WORLD_WIDTH_IN_CHUNKS / 2 - 5; j < WORLD_WIDTH_IN_CHUNKS / 2 + 5; j++) {
+    for (int i = 0; i < WORLD_HEIGHT_IN_CHUNKS / 2 + 5; i++) for (int j = WORLD_WIDTH_IN_CHUNKS / 2 - 3; j < WORLD_WIDTH_IN_CHUNKS / 2 + 3; j++) {
             environment.generateChunk(j, i, testChunkGenerator);
             // if (i < 16 && j < 64)
             graphicEngine.addChunkSprite(environment.getChunk(j, i), j, i);
             // environment.deleteChunk(j, i);
         }
-    graphicEngine.addImageSprite(Rectangle{WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 240, 135}, 107, 0, "../data/test_layer_3.png");
-    graphicEngine.addImageSprite(Rectangle{WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 240, 135}, 200, 0, "../data/test_layer_4.png");
-    graphicEngine.addImageSprite(Rectangle{WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 71, 30}, 100, 200, "../data/test_building_sprites.png");
+    graphicEngine.addImageSprite(RectangleDouble{WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 240, 135}, 107, 0, "../data/test_layer_3.png");
+    graphicEngine.addImageSprite(RectangleDouble{WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 240, 135}, 200, 0, "../data/test_layer_4.png");
+    graphicEngine.addImageSprite(RectangleDouble{WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 71, 30}, 100, 200, "../data/test_building_sprites.png");
     //graphicEngine.addRectSprite(0, 50, 11, 50, 50);
     //graphicEngine.addRectSprite(50, 50, 11, 50, 50);
     //graphicEngine.addRectSprite(0, 0, 10, 50, 50);

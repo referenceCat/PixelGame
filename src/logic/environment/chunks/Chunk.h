@@ -2,7 +2,8 @@
 #define PIXELGAME_CHUNK_H
 #include "Material.h"
 #include <list>
-#include "constans.h"
+#include "../constans.h"
+#include "../../../stuff/Rectangle.h"
 
 class Chunk {
 private:
@@ -10,7 +11,7 @@ private:
 
 private:
     struct MaterialRect {
-        int x, y, w, h;
+        RectangleInt rectangle;
         Material material;
     };
 

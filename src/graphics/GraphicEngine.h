@@ -5,7 +5,7 @@
 #include <allegro5/allegro_primitives.h>
 #include <list>
 #include <iterator>
-#include "../logic/environment/Chunk.h"
+#include "../logic/environment/Chunks/Chunk.h"
 #include "../logic/environment/constans.h"
 #include "../graphics/constans.h"
 #include "../stuff/Rectangle.h"
@@ -23,14 +23,16 @@ private:
     struct Sprite {
         int id;
         ALLEGRO_BITMAP* bitmap;
-        Rectangle globalRect;
+        RectangleDouble globalRect;
         double z, priority;
-
-
     };
 
     int new_id = 0;
     std::list<Sprite> sprites;
+
+    // TODO
+    struct ChunkPair {int id, x, y;};
+    std::list<ChunkPair> chunksId;
 
 private:
     Sprite getSprite(int id);
@@ -46,8 +48,6 @@ public:
 
     double getCameraY() const;
 
-    void moveCamera(double x, double y);
-
     int getDisplayWidth() const;
 
     void setDisplayWidth(int displayWidth);
@@ -56,13 +56,15 @@ public:
 
     void setDisplayHeight(int displayHeight);
 
-    int addSprite(ALLEGRO_BITMAP* bitmap, Rectangle rectangle, double z, double priority);
+    int addSprite(ALLEGRO_BITMAP* bitmap, RectangleDouble rectangle, double z, double priority);
+
+    int addStaticSprite(ALLEGRO_BITMAP* bitmap, RectangleDouble rectangle, double z, double priority);
 
     void deleteSprite(int id);
 
-    int addRectSprite(Rectangle rectangle, double z, double priority);
+    int addRectSprite(RectangleDouble rectangle, double z, double priority);
 
-    int addImageSprite(Rectangle rectangle, double z, double priority, char *name);
+    int addImageSprite(RectangleDouble rectangle, double z, double priority, char *name);
 
     int addChunkSprite(Chunk& chunk, int chunkX, int chunkY);
 
@@ -79,6 +81,8 @@ public:
     double getDisplayHeightInUnits() const;
 
     void setDisplayHeightInUnits(double displayHeightInUnits);
+
+    int getChunkSpriteId(int x, int y);
 };
 
 #endif //PIXELGAME_GRAPHICENGINE_H

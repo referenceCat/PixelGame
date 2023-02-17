@@ -22,7 +22,7 @@ GraphicEngine::Sprite GraphicEngine::getSprite(int id) {
 }
 
 // x, y, w, h in game units
-int GraphicEngine::addSprite(ALLEGRO_BITMAP *bitmap, Rectangle rectangle, double z, double priority) {
+int GraphicEngine::addSprite(ALLEGRO_BITMAP *bitmap, RectangleDouble rectangle, double z, double priority) {
     Sprite new_sprite{new_id, bitmap, rectangle, z, priority};
     new_id++;
     for (auto iter = sprites.begin(); iter != sprites.end(); iter++) {
@@ -44,13 +44,13 @@ void GraphicEngine::deleteSprite(int id) {
 }
 
 // x, y, w, h in game units
-int GraphicEngine::addRectSprite(Rectangle rectangle, double z, double priority) {
+int GraphicEngine::addRectSprite(RectangleDouble rectangle, double z, double priority) {
     ALLEGRO_BITMAP* bitmap = al_load_bitmap("../data/missing.png");
     return addSprite(bitmap,rectangle, z, priority);
 }
 
 // x, y, w, h in game units
-int GraphicEngine::addImageSprite(Rectangle rectangle, double z, double priority, char* name) {
+int GraphicEngine::addImageSprite(RectangleDouble rectangle, double z, double priority, char* name) {
     ALLEGRO_BITMAP* bitmap = al_load_bitmap(name);
     return addSprite(bitmap,rectangle, z, priority);
 }
@@ -78,7 +78,9 @@ int  GraphicEngine::addChunkSprite(Chunk& chunk, int chunkX, int chunkY) {
         if (materialMap[i][j].id == 1) al_put_pixel(j, CHUNK_SIZE - 1 - i, al_map_rgb(100, 100, 100));
         else if (materialMap[i][j].id == 2) al_put_pixel(j, CHUNK_SIZE - 1 - i, al_map_rgb(200, 0, 0));
     }
-return addSprite(bitmap, Rectangle{(double) chunkX * CHUNK_SIZE,(double) chunkY * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE}, MAIN_Z, 100);
+    int id = addStaticSprite(bitmap, RectangleDouble{(double) chunkX * CHUNK_SIZE,(double) chunkY * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE}, MAIN_Z, 100);
+    chunksId.push_back({id, chunkX, chunkY});
+    return id;
 }
 
 double GraphicEngine::getCameraX() const {
@@ -135,4 +137,14 @@ void GraphicEngine::setCamera(double x, double y, double displayWidthInUnits, do
     setCameraY(y);
     setDisplayWidthInUnits(displayWidthInUnits);
     setDisplayHeightInUnits(displayHeightInUnits);
+}
+
+int GraphicEngine::addStaticSprite(ALLEGRO_BITMAP *bitmap, RectangleDouble rectangle, double z, double priority) {
+    // TODO
+    return addSprite(bitmap, rectangle, z, priority);
+}
+
+int GraphicEngine::getChunkSpriteId(int x, int y) {
+    // TODO bad algorithm
+    for (auto chunkPair: chunksId) if (chunkPair.x == x && chunkPair.y == y) return chunkPair.id;
 }
