@@ -7,6 +7,7 @@
 #include <iterator>
 #include "../logic/environment/Chunk.h"
 #include "../logic/environment/constans.h"
+#include "../graphics/constans.h"
 
 
 class GraphicEngine {
@@ -14,8 +15,8 @@ private:
     void operator=(const GraphicEngine&);
 
 private:
-    double MAIN_LAYER_Z = 100, parallax_x = 0.5, parallax_y = 0.1;
-    double cameraX = WORLD_WIDTH_IN_UNITS / 2, cameraY = WORLD_HEIGHT_IN_UNITS / 2, pixelsToUnitRatio = 2;
+    double cameraX = 0, cameraY = 0, displayWidthInUnits = 960, displayHeightInUnits = 540;
+
     int displayWidth, displayHeight;
 
     struct Sprite {
@@ -51,12 +52,6 @@ public:
 
     void setDisplayHeight(int displayHeight);
 
-    double getPixelsToUnitRatio() const;
-
-    void setPixelsToUnitRatio(double pixelsToUnitRatio);
-
-    void drawRect(double x, double y, double w, double h);
-
     int addSprite(ALLEGRO_BITMAP* bitmap, double x, double y, double z, double w, double h, double priority);
 
     void deleteSprite(int id);
@@ -66,6 +61,20 @@ public:
     int addImageSprite(double x, double y, double z, double w, double h, double priority, char *name);
 
     int addChunkSprite(Chunk& chunk, int chunkX, int chunkY);
+
+    void setCamera(double x, double y, double displayWidthInUnits, double displayHeightInUnits);
+
+    void setCameraX(double cameraX);
+
+    void setCameraY(double cameraY);
+
+    double getDisplayWidthInUnits() const;
+
+    void setDisplayWidthInUnits(double displayWidthInUnits);
+
+    double getDisplayHeightInUnits() const;
+
+    void setDisplayHeightInUnits(double displayHeightInUnits);
 };
 
 #endif //PIXELGAME_GRAPHICENGINE_H

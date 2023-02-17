@@ -14,47 +14,6 @@ void GraphicEngine::init(int displayWidth, int displayHeight) {
     this->displayHeight = displayHeight;
 }
 
-double GraphicEngine::getCameraX() const {
-    return cameraX;
-}
-
-double GraphicEngine::getCameraY() const {
-    return cameraY;
-}
-
-void GraphicEngine::moveCamera(double x, double y) {
-    this->cameraX = x;
-    this->cameraY = y;
-}
-
-int GraphicEngine::getDisplayWidth() const {
-    return displayWidth;
-}
-
-void GraphicEngine::setDisplayWidth(int displayWidth) {
-    GraphicEngine::displayWidth = displayWidth;
-}
-
-int GraphicEngine::getDisplayHeight() const {
-    return displayHeight;
-}
-
-void GraphicEngine::setDisplayHeight(int displayHeight) {
-    GraphicEngine::displayHeight = displayHeight;
-}
-
-double GraphicEngine::getPixelsToUnitRatio() const {
-    return pixelsToUnitRatio;
-}
-
-void GraphicEngine::setPixelsToUnitRatio(double pixelsToUnitRatio) {
-    GraphicEngine::pixelsToUnitRatio = pixelsToUnitRatio;
-}
-
-void GraphicEngine::drawRect(double x, double y, double w, double h) {
-    al_draw_filled_rectangle(x, y, x+w, y+h, al_map_rgb(255, 255, 255));
-}
-
 
 GraphicEngine::Sprite GraphicEngine::getSprite(int id) {
     for (auto iter = sprites.begin(); iter != sprites.end(); iter++) {
@@ -110,10 +69,10 @@ void GraphicEngine::drawSprite(Sprite sprite) {
     sy = 0;
     sw = al_get_bitmap_width(sprite.bitmap);
     sh = al_get_bitmap_height(sprite.bitmap);
-    dw = sprite.w * pixelsToUnitRatio;
-    dh = sprite.h * pixelsToUnitRatio;
-    dx = (sprite.x - getCameraX()) * pixelsToUnitRatio * pow(MAIN_LAYER_Z / sprite.z,  parallax_x) - dw / 2 + displayWidth / 2;
-    dy = (-sprite.y + getCameraY()) * pixelsToUnitRatio * pow(MAIN_LAYER_Z / sprite.z, parallax_y) - dh / 2 + displayHeight / 2;
+    dw = sprite.w * displayWidth / displayWidthInUnits;
+    dh = sprite.h * displayHeight / displayHeightInUnits;
+    dx = (sprite.x - getCameraX()) * displayWidth / displayWidthInUnits * pow(MAIN_Z / sprite.z, PARALLAX_COEFFICIENT_X) - dw / 2 + displayWidth / 2;
+    dy = (-sprite.y + getCameraY()) * displayHeight / displayHeightInUnits * pow(MAIN_Z / sprite.z, PARALLAX_COEFFICIENT_Y) - dh / 2 + displayHeight / 2;
     al_draw_scaled_bitmap(sprite.bitmap, sx, sy, sw, sh, dx, dy, dw, dh, 0);
 }
 
@@ -127,5 +86,61 @@ int  GraphicEngine::addChunkSprite(Chunk& chunk, int chunkX, int chunkY) {
         if (materialMap[i][j].id == 1) al_put_pixel(j, CHUNK_SIZE - 1 - i, al_map_rgb(100, 100, 100));
         else if (materialMap[i][j].id == 2) al_put_pixel(j, CHUNK_SIZE - 1 - i, al_map_rgb(200, 0, 0));
     }
-    return addSprite(bitmap, chunkX * CHUNK_SIZE - 0.5, chunkY * CHUNK_SIZE - 0.5, MAIN_LAYER_Z, CHUNK_SIZE, CHUNK_SIZE, 100);
+return addSprite(bitmap, chunkX * CHUNK_SIZE - 0.5, chunkY * CHUNK_SIZE - 0.5, MAIN_Z, CHUNK_SIZE, CHUNK_SIZE, 100);
+}
+
+double GraphicEngine::getCameraX() const {
+    return cameraX;
+}
+
+void GraphicEngine::setCameraX(double cameraX) {
+    GraphicEngine::cameraX = cameraX;
+}
+
+double GraphicEngine::getCameraY() const {
+    return cameraY;
+}
+
+void GraphicEngine::setCameraY(double cameraY) {
+    GraphicEngine::cameraY = cameraY;
+}
+
+double GraphicEngine::getDisplayWidthInUnits() const {
+    return displayWidthInUnits;
+}
+
+void GraphicEngine::setDisplayWidthInUnits(double displayWidthInUnits) {
+    GraphicEngine::displayWidthInUnits = displayWidthInUnits;
+}
+
+double GraphicEngine::getDisplayHeightInUnits() const {
+    return displayHeightInUnits;
+}
+
+void GraphicEngine::setDisplayHeightInUnits(double displayHeightInUnits) {
+    GraphicEngine::displayHeightInUnits = displayHeightInUnits;
+}
+
+
+int GraphicEngine::getDisplayWidth() const {
+    return displayWidth;
+}
+
+void GraphicEngine::setDisplayWidth(int displayWidth) {
+    GraphicEngine::displayWidth = displayWidth;
+}
+
+int GraphicEngine::getDisplayHeight() const {
+    return displayHeight;
+}
+
+void GraphicEngine::setDisplayHeight(int displayHeight) {
+    GraphicEngine::displayHeight = displayHeight;
+}
+
+void GraphicEngine::setCamera(double x, double y, double displayWidthInUnits, double displayHeightInUnits) {
+    setCameraX(x);
+    setCameraY(y);
+    setDisplayWidthInUnits(displayWidthInUnits);
+    setDisplayHeightInUnits(displayHeightInUnits);
 }

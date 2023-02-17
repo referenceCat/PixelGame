@@ -3,9 +3,11 @@ GameEngine::GameEngine() {}
 
 void GameEngine::init(GraphicEngine &graphicEngine, GUIEngine &uiGraphicEngine) {
     this->graphicEngine = &graphicEngine;
-    graphicEngine.moveCamera(cameraX, cameraY);
-    graphicEngine.setPixelsToUnitRatio(scale);
-    setCamera(WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 4);
+    graphicEngine.setCameraX(cameraX);
+    graphicEngine.setCameraY(cameraY);
+    graphicEngine.setDisplayWidthInUnits(displayWidthInUnits);
+    graphicEngine.setDisplayHeightInUnits(displayHeightInUnits);
+    setCamera(WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 960, 540);
     this->uiGraphicEngine = &uiGraphicEngine;
     TestChunkGenerator testChunkGenerator = TestChunkGenerator();
 
@@ -28,12 +30,12 @@ void GameEngine::init(GraphicEngine &graphicEngine, GUIEngine &uiGraphicEngine) 
     //graphicEngine.addRectSprite(50, 0, 10, 50, 50);
 }
 void GameEngine::update() {
-    if (upKeyPressed and cameraY < WORLD_HEIGHT_IN_UNITS) setCamera(cameraX, cameraY + cameraMovementSpeed / scale, scale);
-    if (downKeyPressed and cameraY > 0) setCamera(cameraX, cameraY - cameraMovementSpeed / scale, scale);
-    if (leftKeyPressed and cameraX > 0) setCamera(cameraX - cameraMovementSpeed / scale, cameraY, scale);
-    if (rightKeyPressed and cameraX < WORLD_WIDTH_IN_UNITS) setCamera(cameraX + cameraMovementSpeed / scale, cameraY, scale);
-    if (zoomInKeyPressed and scale < maxScale) setCamera(cameraX, cameraY,  scale * cameraRescaleSpeed);
-    if (zoomOutKeyPressed and scale > minScale) setCamera(cameraX, cameraY,  scale / cameraRescaleSpeed);
+    if (upKeyPressed and cameraY < WORLD_HEIGHT_IN_UNITS) setCamera(cameraX, cameraY + cameraMovementSpeed * displayHeightInUnits / 1080, displayWidthInUnits, displayHeightInUnits);
+    if (downKeyPressed and cameraY > 0) setCamera(cameraX, cameraY - cameraMovementSpeed * displayHeightInUnits / 1080, displayWidthInUnits, displayHeightInUnits);
+    if (leftKeyPressed and cameraX > 0) setCamera(cameraX - cameraMovementSpeed * displayWidthInUnits / 1920, cameraY, displayWidthInUnits, displayHeightInUnits);
+    if (rightKeyPressed and cameraX < WORLD_WIDTH_IN_UNITS) setCamera(cameraX + cameraMovementSpeed * displayWidthInUnits / 1920, cameraY, displayWidthInUnits, displayHeightInUnits);
+    if (zoomInKeyPressed and 1920 / displayWidthInUnits < maxScale) setCamera(cameraX, cameraY,  displayWidthInUnits / cameraRescaleSpeed, displayHeightInUnits / cameraRescaleSpeed);
+    if (zoomOutKeyPressed and 1920 / displayWidthInUnits > minScale) setCamera(cameraX, cameraY,  displayWidthInUnits * cameraRescaleSpeed, displayHeightInUnits * cameraRescaleSpeed);
     updateUI();
     if (!isPaused()) updateGameLogic();
 }
@@ -99,11 +101,43 @@ void GameEngine::zoomOutButtonRealise() {
     zoomOutKeyPressed = 0;
 }
 
-void GameEngine::setCamera(double x, double y, double scale) {
-    cameraX = x;
-    cameraY = y;
-    this->scale = scale;
-    graphicEngine->moveCamera(x, y);
-    graphicEngine->setPixelsToUnitRatio(scale);
+void GameEngine::setCamera(double x, double y, double displayWidthInUnits, double displayHeightInUnits) {
+    setCameraX(x);
+    setCameraY(y);
+    setDisplayWidthInUnits(displayWidthInUnits);
+    setDisplayHeightInUnits(displayHeightInUnits);
+    graphicEngine->setCamera(x, y, displayWidthInUnits, displayHeightInUnits);
+}
+
+double GameEngine::getCameraX() const {
+    return cameraX;
+}
+
+void GameEngine::setCameraX(double cameraX) {
+    GameEngine::cameraX = cameraX;
+}
+
+double GameEngine::getCameraY() const {
+    return cameraY;
+}
+
+void GameEngine::setCameraY(double cameraY) {
+    GameEngine::cameraY = cameraY;
+}
+
+double GameEngine::getDisplayWidthInUnits() const {
+    return displayWidthInUnits;
+}
+
+void GameEngine::setDisplayWidthInUnits(double displayWidthInUnits) {
+    GameEngine::displayWidthInUnits = displayWidthInUnits;
+}
+
+double GameEngine::getDisplayHeightInUnits() const {
+    return displayHeightInUnits;
+}
+
+void GameEngine::setDisplayHeightInUnits(double displayHeightInUnits) {
+    GameEngine::displayHeightInUnits = displayHeightInUnits;
 }
 

@@ -11,8 +11,26 @@
  class GameEngine {
 private:
     int upKeyPressed = 0, downKeyPressed = 0, leftKeyPressed = 0, rightKeyPressed = 0, zoomInKeyPressed = 0, zoomOutKeyPressed = 0;
-    double cameraX = 0, cameraY = 0, scale = 4, cameraMovementSpeed = 20, cameraRescaleSpeed = 1.05, maxScale = 8, minScale = 2;
-    void operator=(const GameEngine&);
+    double cameraX = 0, cameraY = 0, displayWidthInUnits = 960, displayHeightInUnits = 540, cameraMovementSpeed = 20, cameraRescaleSpeed = 1.05, maxScale = 8, minScale = 2;
+ public:
+     double getCameraX() const;
+
+     void setCameraX(double cameraX);
+
+     double getCameraY() const;
+
+     void setCameraY(double cameraY);
+
+     double getDisplayWidthInUnits() const;
+
+     void setDisplayWidthInUnits(double displayWidthInUnits);
+
+     double getDisplayHeightInUnits() const;
+
+     void setDisplayHeightInUnits(double displayHeightInUnits);
+
+ private:
+     void operator=(const GameEngine&);
 
 private:
     int paused = 1;
@@ -43,7 +61,7 @@ public:
     void zoomInButtonRealise();
     void zoomOutButtonClick();
     void zoomOutButtonRealise();
-    void setCamera(double x, double y, double scale);
+    void setCamera(double x, double y, double displayWidthInUnits, double displayHeightInUnits);
  };
 
 
