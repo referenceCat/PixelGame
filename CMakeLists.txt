@@ -11,7 +11,7 @@ set(SOURCE_FILES
         src/logic/environment/Environment.cpp
         src/logic/environment/TestChunkGenerator.cpp
         src/logic/environment/ChunkGenerator.h
-        src/logic/environment/Chunk.cpp src/logic/environment/constans.h src/ui/UIEventManager.cpp src/ui/UIEventManager.h src/graphics/constans.h)
+        src/logic/environment/Chunk.cpp src/logic/environment/constans.h src/ui/UIEventManager.cpp src/ui/UIEventManager.h src/graphics/constans.h src/stuff/Rectangle.cpp src/stuff/Rectangle.h)
 add_executable(PixelGame ${SOURCE_FILES})
 
 INCLUDE_DIRECTORIES(  /usr/local/Cellar/allegro/5.2.8.0_2/include )

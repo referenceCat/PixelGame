@@ -8,6 +8,7 @@
 #include "../logic/environment/Chunk.h"
 #include "../logic/environment/constans.h"
 #include "../graphics/constans.h"
+#include "../stuff/Rectangle.h"
 
 
 class GraphicEngine {
@@ -22,7 +23,10 @@ private:
     struct Sprite {
         int id;
         ALLEGRO_BITMAP* bitmap;
-        double x, y, z, w, h, priority;
+        Rectangle globalRect;
+        double z, priority;
+
+
     };
 
     int new_id = 0;
@@ -52,13 +56,13 @@ public:
 
     void setDisplayHeight(int displayHeight);
 
-    int addSprite(ALLEGRO_BITMAP* bitmap, double x, double y, double z, double w, double h, double priority);
+    int addSprite(ALLEGRO_BITMAP* bitmap, Rectangle rectangle, double z, double priority);
 
     void deleteSprite(int id);
 
-    int addRectSprite(double x, double y, double z, double w, double h, double priority);
+    int addRectSprite(Rectangle rectangle, double z, double priority);
 
-    int addImageSprite(double x, double y, double z, double w, double h, double priority, char *name);
+    int addImageSprite(Rectangle rectangle, double z, double priority, char *name);
 
     int addChunkSprite(Chunk& chunk, int chunkX, int chunkY);
 

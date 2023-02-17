@@ -34,7 +34,6 @@ private:
 
 private:
     int paused = 1;
-    int testInit();
     Environment environment;
     GraphicEngine* graphicEngine;
     GUIEngine* uiGraphicEngine;

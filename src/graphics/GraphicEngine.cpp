@@ -22,16 +22,8 @@ GraphicEngine::Sprite GraphicEngine::getSprite(int id) {
 }
 
 // x, y, w, h in game units
-int GraphicEngine::addSprite(ALLEGRO_BITMAP *bitmap, double x, double y, double z, double w, double h, double priority) {
-    Sprite new_sprite = Sprite();
-    new_sprite.bitmap = bitmap;
-    new_sprite.x = x;
-    new_sprite.y = y;
-    new_sprite.z = z;
-    new_sprite.w = w;
-    new_sprite.h = h;
-    new_sprite.id = new_id;
-    new_sprite.priority = priority;
+int GraphicEngine::addSprite(ALLEGRO_BITMAP *bitmap, Rectangle rectangle, double z, double priority) {
+    Sprite new_sprite{new_id, bitmap, rectangle, z, priority};
     new_id++;
     for (auto iter = sprites.begin(); iter != sprites.end(); iter++) {
         if (iter->z < z || (iter->z == z && iter->priority >= priority)) {
@@ -52,15 +44,15 @@ void GraphicEngine::deleteSprite(int id) {
 }
 
 // x, y, w, h in game units
-int GraphicEngine::addRectSprite(double x, double y, double z, double w, double h, double priority) {
+int GraphicEngine::addRectSprite(Rectangle rectangle, double z, double priority) {
     ALLEGRO_BITMAP* bitmap = al_load_bitmap("../data/missing.png");
-    return addSprite(bitmap, x, y, z, w, h, priority);
+    return addSprite(bitmap,rectangle, z, priority);
 }
 
 // x, y, w, h in game units
-int GraphicEngine::addImageSprite(double x, double y, double z, double w, double h, double priority, char* name) {
+int GraphicEngine::addImageSprite(Rectangle rectangle, double z, double priority, char* name) {
     ALLEGRO_BITMAP* bitmap = al_load_bitmap(name);
-    return addSprite(bitmap, x, y, z, w, h, priority);
+    return addSprite(bitmap,rectangle, z, priority);
 }
 
 void GraphicEngine::drawSprite(Sprite sprite) {
@@ -69,10 +61,10 @@ void GraphicEngine::drawSprite(Sprite sprite) {
     sy = 0;
     sw = al_get_bitmap_width(sprite.bitmap);
     sh = al_get_bitmap_height(sprite.bitmap);
-    dw = sprite.w * displayWidth / displayWidthInUnits;
-    dh = sprite.h * displayHeight / displayHeightInUnits;
-    dx = (sprite.x - getCameraX()) * displayWidth / displayWidthInUnits * pow(MAIN_Z / sprite.z, PARALLAX_COEFFICIENT_X) - dw / 2 + displayWidth / 2;
-    dy = (-sprite.y + getCameraY()) * displayHeight / displayHeightInUnits * pow(MAIN_Z / sprite.z, PARALLAX_COEFFICIENT_Y) - dh / 2 + displayHeight / 2;
+    dw = sprite.globalRect.w * displayWidth / displayWidthInUnits;
+    dh = sprite.globalRect.h * displayHeight / displayHeightInUnits;
+    dx = (sprite.globalRect.x - getCameraX()) * displayWidth / displayWidthInUnits * pow(MAIN_Z / sprite.z, PARALLAX_COEFFICIENT_X) + displayWidth / 2;
+    dy = (-sprite.globalRect.y - sprite.globalRect.h + getCameraY()) * displayHeight / displayHeightInUnits * pow(MAIN_Z / sprite.z, PARALLAX_COEFFICIENT_Y) + displayHeight / 2;
     al_draw_scaled_bitmap(sprite.bitmap, sx, sy, sw, sh, dx, dy, dw, dh, 0);
 }
 
@@ -86,7 +78,7 @@ int  GraphicEngine::addChunkSprite(Chunk& chunk, int chunkX, int chunkY) {
         if (materialMap[i][j].id == 1) al_put_pixel(j, CHUNK_SIZE - 1 - i, al_map_rgb(100, 100, 100));
         else if (materialMap[i][j].id == 2) al_put_pixel(j, CHUNK_SIZE - 1 - i, al_map_rgb(200, 0, 0));
     }
-return addSprite(bitmap, chunkX * CHUNK_SIZE - 0.5, chunkY * CHUNK_SIZE - 0.5, MAIN_Z, CHUNK_SIZE, CHUNK_SIZE, 100);
+return addSprite(bitmap, Rectangle{(double) chunkX * CHUNK_SIZE,(double) chunkY * CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE}, MAIN_Z, 100);
 }
 
 double GraphicEngine::getCameraX() const {
