@@ -33,7 +33,6 @@ void Chunk::applyMaterialMap(Material (*materialMap)[128]) {
                 materialMap[i][x] = air;
                 w++;
             }
-            x;
             int flag = 1;
             for (int y = i + 1; y < CHUNK_SIZE; y++) {
                 for (int x_test = j; x_test < x; x_test++) {

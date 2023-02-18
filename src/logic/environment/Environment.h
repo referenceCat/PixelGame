@@ -1,11 +1,17 @@
 #ifndef PIXELGAME_ENVIRONMENT_H
 #define PIXELGAME_ENVIRONMENT_H
-#include "Chunks/Chunk.h"
-#include "Chunks/ChunkGenerator.h"
+#include "chunks/Chunk.h"
+#include "chunks/ChunkGenerator.h"
+#include "static_objects/StaticObject.h"
 
-class Environment {private:
+class Environment {
+private:
     Chunk chunks[WORLD_HEIGHT_IN_CHUNKS][WORLD_WIDTH_IN_CHUNKS];
     int generatedChunks[WORLD_HEIGHT_IN_CHUNKS][WORLD_WIDTH_IN_CHUNKS];
+
+    std::list<StaticObject> staticObjects;
+    int staticObjectsNewId = 0;
+
 
 public:
         Chunk& getChunk(int x, int y);
@@ -13,6 +19,8 @@ public:
         int isChunkGenerated(int x, int y);
         void deleteChunk(int x, int y);
         Environment();
+        int addStaticObject(StaticObject staticObject);
+        StaticObject getStaticObjectById(int id);
 };
 
 

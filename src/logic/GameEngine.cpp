@@ -1,41 +1,36 @@
 #include "GameEngine.h"
-GameEngine::GameEngine() {}
-
-void GameEngine::init(GraphicEngine &graphicEngine, GUIEngine &uiGraphicEngine) {
+GameEngine::GameEngine(GraphicEngine &graphicEngine, UIEngine &uiEngine) {
     this->graphicEngine = &graphicEngine;
-    graphicEngine.setCameraX(cameraX);
-    graphicEngine.setCameraY(cameraY);
-    graphicEngine.setDisplayWidthInUnits(displayWidthInUnits);
-    graphicEngine.setDisplayHeightInUnits(displayHeightInUnits);
     setCamera(WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 960, 540);
-    this->uiGraphicEngine = &uiGraphicEngine;
+    this->uiEngine = &uiEngine;
+}
+
+void GameEngine::init() {
+    // TODO
+
     TestChunkGenerator testChunkGenerator = TestChunkGenerator();
-
-
     environment.generateChunk(0, 0, testChunkGenerator);
-    graphicEngine.addChunkSprite(environment.getChunk(0, 0), 0, 0);
+    graphicEngine->addChunkSprite(environment.getChunk(0, 0), 0, 0);
 
-    for (int i = 0; i < WORLD_HEIGHT_IN_CHUNKS / 2 + 5; i++) for (int j = WORLD_WIDTH_IN_CHUNKS / 2 - 3; j < WORLD_WIDTH_IN_CHUNKS / 2 + 3; j++) {
+    for (int i = 0; i < WORLD_HEIGHT_IN_CHUNKS / 2 + 16; i++) for (int j = WORLD_WIDTH_IN_CHUNKS / 2 - 3; j < WORLD_WIDTH_IN_CHUNKS / 2 + 3; j++) {
             environment.generateChunk(j, i, testChunkGenerator);
-            // if (i < 16 && j < 64)
-            graphicEngine.addChunkSprite(environment.getChunk(j, i), j, i);
-            // environment.deleteChunk(j, i);
+            graphicEngine->addChunkSprite(environment.getChunk(j, i), j, i);
         }
-    graphicEngine.addImageSprite(RectangleDouble{WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 240, 135}, 107, 0, "../data/test_layer_3.png");
-    graphicEngine.addImageSprite(RectangleDouble{WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 240, 135}, 200, 0, "../data/test_layer_4.png");
-    graphicEngine.addImageSprite(RectangleDouble{WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 71, 30}, 100, 200, "../data/test_building_sprites.png");
-    //graphicEngine.addRectSprite(0, 50, 11, 50, 50);
-    //graphicEngine.addRectSprite(50, 50, 11, 50, 50);
-    //graphicEngine.addRectSprite(0, 0, 10, 50, 50);
-    //graphicEngine.addRectSprite(50, 0, 10, 50, 50);
+    graphicEngine->addImageSprite(RectangleDouble{WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 240, 135}, 107, 0, "../data/test_layer_3.png");
+    graphicEngine->addImageSprite(RectangleDouble{WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 240, 135}, 200, 0, "../data/test_layer_4.png");
+    graphicEngine->addImageSprite(RectangleDouble{WORLD_WIDTH_IN_UNITS / 2, WORLD_HEIGHT_IN_UNITS / 2, 71, 30}, 100, 200, "../data/test_building_sprites.png");
+    Server server;
+    server.setRectangle(RectangleInt{WORLD_WIDTH_IN_UNITS/ 2 - 20, WORLD_HEIGHT_IN_UNITS / 2, 16, 20});
+    int serverId = environment.addStaticObject(server);
+    graphicEngine->addStaticObjectSprite(server);
 }
 void GameEngine::update() {
-    if (upKeyPressed and cameraY < WORLD_HEIGHT_IN_UNITS) setCamera(cameraX, cameraY + cameraMovementSpeed * displayHeightInUnits / 1080, displayWidthInUnits, displayHeightInUnits);
-    if (downKeyPressed and cameraY > 0) setCamera(cameraX, cameraY - cameraMovementSpeed * displayHeightInUnits / 1080, displayWidthInUnits, displayHeightInUnits);
-    if (leftKeyPressed and cameraX > 0) setCamera(cameraX - cameraMovementSpeed * displayWidthInUnits / 1920, cameraY, displayWidthInUnits, displayHeightInUnits);
-    if (rightKeyPressed and cameraX < WORLD_WIDTH_IN_UNITS) setCamera(cameraX + cameraMovementSpeed * displayWidthInUnits / 1920, cameraY, displayWidthInUnits, displayHeightInUnits);
-    if (zoomInKeyPressed and 1920 / displayWidthInUnits < maxScale) setCamera(cameraX, cameraY,  displayWidthInUnits / cameraRescaleSpeed, displayHeightInUnits / cameraRescaleSpeed);
-    if (zoomOutKeyPressed and 1920 / displayWidthInUnits > minScale) setCamera(cameraX, cameraY,  displayWidthInUnits * cameraRescaleSpeed, displayHeightInUnits * cameraRescaleSpeed);
+    if (uiEngine->isUpPressed() and cameraY < WORLD_HEIGHT_IN_UNITS) setCamera(cameraX, cameraY + cameraMovementSpeed * displayHeightInUnits / 1080, displayWidthInUnits, displayHeightInUnits);
+    if (uiEngine->isDownPressed() and cameraY > 0) setCamera(cameraX, cameraY - cameraMovementSpeed * displayHeightInUnits / 1080, displayWidthInUnits, displayHeightInUnits);
+    if (uiEngine->isLeftPressed() and cameraX > 0) setCamera(cameraX - cameraMovementSpeed * displayWidthInUnits / 1920, cameraY, displayWidthInUnits, displayHeightInUnits);
+    if (uiEngine->isRightPressed() and cameraX < WORLD_WIDTH_IN_UNITS) setCamera(cameraX + cameraMovementSpeed * displayWidthInUnits / 1920, cameraY, displayWidthInUnits, displayHeightInUnits);
+    if (uiEngine->isZoomInPressed() and 1920 / displayWidthInUnits < maxScale) setCamera(cameraX, cameraY,  displayWidthInUnits / cameraRescaleSpeed, displayHeightInUnits / cameraRescaleSpeed);
+    if (uiEngine->isZoomOutPressed() and 1920 / displayWidthInUnits > minScale) setCamera(cameraX, cameraY,  displayWidthInUnits * cameraRescaleSpeed, displayHeightInUnits * cameraRescaleSpeed);
     updateUI();
     if (!isPaused()) updateGameLogic();
 }
@@ -53,53 +48,6 @@ void GameEngine::mouseRealise(double x, double y) {
 
 }
 
-void GameEngine::upButtonClick() {
-    upKeyPressed = 1;
-}
-
-void GameEngine::upButtonRealise() {
-    upKeyPressed = 0;
-}
-
-void GameEngine::downButtonClick() {
-    downKeyPressed = 1;
-}
-
-void GameEngine::downButtonRealise() {
-    downKeyPressed = 0;
-}
-
-void GameEngine::leftButtonClick() {
-    leftKeyPressed = 1;
-}
-
-void GameEngine::leftButtonRealise() {
-    leftKeyPressed = 0;
-}
-
-void GameEngine::rightButtonClick() {
-    rightKeyPressed = 1;
-}
-
-void GameEngine::rightButtonRealise() {
-    rightKeyPressed = 0;
-}
-
-void GameEngine::zoomInButtonClick() {
-    zoomInKeyPressed = 1;
-}
-
-void GameEngine::zoomInButtonRealise() {
-    zoomInKeyPressed = 0;
-}
-
-void GameEngine::zoomOutButtonClick() {
-    zoomOutKeyPressed = 1;
-}
-
-void GameEngine::zoomOutButtonRealise() {
-    zoomOutKeyPressed = 0;
-}
 
 void GameEngine::setCamera(double x, double y, double displayWidthInUnits, double displayHeightInUnits) {
     setCameraX(x);

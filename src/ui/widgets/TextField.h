@@ -1,0 +1,8 @@
+#ifndef PIXELGAME_TEXTFIELD_H
+#define PIXELGAME_TEXTFIELD_H
+
+class TextField {
+
+};
+
+#endif //PIXELGAME_TEXTFIELD_H

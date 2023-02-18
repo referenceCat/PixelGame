@@ -5,10 +5,11 @@
 #include <allegro5/allegro_primitives.h>
 #include <list>
 #include <iterator>
-#include "../logic/environment/Chunks/Chunk.h"
+#include "../logic/environment/chunks/Chunk.h"
 #include "../logic/environment/constans.h"
 #include "../graphics/constans.h"
 #include "../stuff/Rectangle.h"
+#include "../logic/environment/static_objects/StaticObject.h"
 
 
 class GraphicEngine {
@@ -40,7 +41,7 @@ private:
     void drawSprite(Sprite sprite);
 
 public:
-    void init(int displayWidth, int displayHeight);
+    GraphicEngine(int displayWidth, int displayHeight);
 
     void draw();
 
@@ -83,6 +84,8 @@ public:
     void setDisplayHeightInUnits(double displayHeightInUnits);
 
     int getChunkSpriteId(int x, int y);
+
+    int addStaticObjectSprite(StaticObject& staticObject);
 };
 
 #endif //PIXELGAME_GRAPHICENGINE_H

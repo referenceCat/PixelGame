@@ -59,13 +59,10 @@ int main(int argc, char *argv[])
     al_start_timer(redraw_timer);
     al_start_timer(update_timer);
 
-    GraphicEngine graphicEngine = GraphicEngine();
-    graphicEngine.init(al_get_display_width(display), al_get_display_height(display));
-    GUIEngine uiGraphicEngine = GUIEngine();
-    uiGraphicEngine.init(al_get_display_width(display), al_get_display_height(display));
-    GameEngine gameEngine = GameEngine();
-    gameEngine.init(graphicEngine, uiGraphicEngine);
-    UIEventManager uiEventManager = UIEventManager(gameEngine);
+    GraphicEngine graphicEngine = GraphicEngine(al_get_display_width(display), al_get_display_height(display));
+    UIEngine uiEngine = UIEngine(al_get_display_width(display), al_get_display_height(display));
+    GameEngine gameEngine = GameEngine(graphicEngine, uiEngine);
+    gameEngine.init();
 
     // GE test
 
@@ -91,11 +88,21 @@ int main(int argc, char *argv[])
                     running = false;
                     break;
                 case ALLEGRO_EVENT_KEY_DOWN:
-                    uiEventManager.keyCLick(event.keyboard.keycode);
+                    uiEngine.keyCLick(event.keyboard.keycode);
                     break;
                 case ALLEGRO_EVENT_KEY_UP:
-                    uiEventManager.keyRealise(event.keyboard.keycode);
+                    uiEngine.keyRealise(event.keyboard.keycode);
                     break;
+                case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+                    uiEngine.mouseClick(event.mouse.button);
+                    break;
+                case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
+                    uiEngine.mouseRealise(event.mouse.button);
+                    break;
+                case ALLEGRO_EVENT_MOUSE_WARPED:
+                    uiEngine.mouseMove(event.mouse.x, event.mouse.y);
+                    break;
+
                 default:
                     fprintf(stderr, "Unsupported event received: %d\n", event.type);
                     break;
@@ -106,7 +113,7 @@ int main(int argc, char *argv[])
         if (redraw && al_is_event_queue_empty(event_queue)) {
             // Redraw
             graphicEngine.draw();
-            uiGraphicEngine.draw();
+            uiEngine.draw();
             al_flip_display();
             redraw = false;
         }

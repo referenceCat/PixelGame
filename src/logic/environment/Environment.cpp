@@ -23,3 +23,13 @@ Environment::Environment() {
 int Environment::isChunkGenerated(int x, int y) {
     return generatedChunks[y][x];
 }
+
+int Environment::addStaticObject(StaticObject staticObject) {
+    staticObject.setId(staticObjectsNewId);
+    staticObjectsNewId++;
+    return staticObjectsNewId - 1;
+}
+
+StaticObject Environment::getStaticObjectById(int id) {
+    return StaticObject();
+}

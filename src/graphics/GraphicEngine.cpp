@@ -9,7 +9,7 @@ void GraphicEngine::draw() {
     al_hold_bitmap_drawing(false);
 }
 
-void GraphicEngine::init(int displayWidth, int displayHeight) {
+GraphicEngine::GraphicEngine(int displayWidth, int displayHeight) {
     this->displayWidth = displayWidth;
     this->displayHeight = displayHeight;
 }
@@ -57,6 +57,10 @@ int GraphicEngine::addImageSprite(RectangleDouble rectangle, double z, double pr
 
 void GraphicEngine::drawSprite(Sprite sprite) {
     double sx, sy, sw, sh, dx, dy, dw, dh;
+    if ((sprite.globalRect.x - cameraX) * pow(MAIN_Z / sprite.z, PARALLAX_COEFFICIENT_X) > displayWidthInUnits / 2 ||
+            (sprite.globalRect.x - cameraX) * pow(MAIN_Z / sprite.z, PARALLAX_COEFFICIENT_X) + sprite.globalRect.w < -displayWidthInUnits / 2 ||
+            (sprite.globalRect.y - cameraY) * pow(MAIN_Z / sprite.z, PARALLAX_COEFFICIENT_Y) > displayHeightInUnits / 2 ||
+            (sprite.globalRect.y - cameraY) * pow(MAIN_Z / sprite.z, PARALLAX_COEFFICIENT_Y) + sprite.globalRect.h < -displayHeightInUnits / 2) return;
     sx = 0;
     sy = 0;
     sw = al_get_bitmap_width(sprite.bitmap);
@@ -147,4 +151,10 @@ int GraphicEngine::addStaticSprite(ALLEGRO_BITMAP *bitmap, RectangleDouble recta
 int GraphicEngine::getChunkSpriteId(int x, int y) {
     // TODO bad algorithm
     for (auto chunkPair: chunksId) if (chunkPair.x == x && chunkPair.y == y) return chunkPair.id;
+}
+
+int GraphicEngine::addStaticObjectSprite(StaticObject& staticObject) {
+    int id = addStaticSprite(al_load_bitmap(staticObject.getImageFile()), staticObject.getRectangle(), MAIN_Z, 10);
+    staticObject.setSpriteId(id);
+    return id;
 }
