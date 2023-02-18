@@ -20,7 +20,7 @@ set(SOURCE_FILES
         src/logic/environment/static_objects/StaticObject.cpp
         src/logic/environment/static_objects/StaticObject.h
         src/logic/environment/static_objects/server/Server.cpp
-        src/logic/environment/static_objects/server/Server.h src/ui/widgets/Widget.cpp src/ui/widgets/Widget.h src/ui/widgets/Button.cpp src/ui/widgets/Button.h src/ui/widgets/TextField.cpp src/ui/widgets/TextField.h)
+        src/logic/environment/static_objects/server/Server.h src/ui/widgets/Widget.cpp src/ui/widgets/Widget.h src/ui/widgets/Button.cpp src/ui/widgets/Button.h src/ui/constans.h src/ui/widgets/Window.cpp src/ui/widgets/Window.h src/ui/widgets/Label.cpp src/ui/widgets/Label.h src/ui/widgets/Layout.cpp src/ui/widgets/Layout.h)
 add_executable(PixelGame ${SOURCE_FILES})
 
 INCLUDE_DIRECTORIES(  /usr/local/Cellar/allegro/5.2.8.0_2/include )

@@ -46,11 +46,14 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // Create the keyboard
+    // Create the keyboard and mouse
     al_install_keyboard();
+    al_install_mouse();
+    al_hide_mouse_cursor(display);
 
     // Register event sources
     al_register_event_source(event_queue, al_get_keyboard_event_source());
+    al_register_event_source(event_queue , al_get_mouse_event_source());
     al_register_event_source(event_queue, al_get_display_event_source(display));
     al_register_event_source(event_queue, al_get_timer_event_source(redraw_timer));
     al_register_event_source(event_queue, al_get_timer_event_source(update_timer));
@@ -99,7 +102,8 @@ int main(int argc, char *argv[])
                 case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
                     uiEngine.mouseRealise(event.mouse.button);
                     break;
-                case ALLEGRO_EVENT_MOUSE_WARPED:
+                case ALLEGRO_EVENT_MOUSE_AXES:
+                    // std::cout << event.mouse.x;
                     uiEngine.mouseMove(event.mouse.x, event.mouse.y);
                     break;
 

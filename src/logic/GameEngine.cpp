@@ -23,6 +23,9 @@ void GameEngine::init() {
     server.setRectangle(RectangleInt{WORLD_WIDTH_IN_UNITS/ 2 - 20, WORLD_HEIGHT_IN_UNITS / 2, 16, 20});
     int serverId = environment.addStaticObject(server);
     graphicEngine->addStaticObjectSprite(server);
+    window.setId(testWindowId);
+    window.setRectangle(RectangleInt{100, 100, 300, 300});
+    uiEngine->addWidget(&window);
 }
 void GameEngine::update() {
     if (uiEngine->isUpPressed() and cameraY < WORLD_HEIGHT_IN_UNITS) setCamera(cameraX, cameraY + cameraMovementSpeed * displayHeightInUnits / 1080, displayWidthInUnits, displayHeightInUnits);

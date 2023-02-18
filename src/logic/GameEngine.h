@@ -6,10 +6,14 @@
 #include "../ui/UIEngine.h"
 #include "environment/chunks/TestChunkGenerator.h"
 #include "environment/static_objects/server/Server.h"
+#include "../ui/widgets/Widget.h"
+#include "../ui/widgets/Window.h"
 
 #include "math.h"
 
  class GameEngine {
+ private:
+     void operator=(const GameEngine&);
 private:
     double cameraX = 0,
     cameraY = 0,
@@ -18,6 +22,9 @@ private:
     cameraMovementSpeed = 25,
     cameraRescaleSpeed = 1.05,
     maxScale = 8, minScale = 2;
+    int testWindowId = 10;
+     Window window{};
+
  public:
      double getCameraX() const;
 
@@ -34,9 +41,6 @@ private:
      double getDisplayHeightInUnits() const;
 
      void setDisplayHeightInUnits(double displayHeightInUnits);
-
- private:
-     void operator=(const GameEngine&);
 
 private:
     int paused = 1;

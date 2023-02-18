@@ -3,10 +3,24 @@
 #include "widgets/Widget.h"
 #include <list>
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
+#include "constans.h"
+#include "widgets/Layout.h"
+#include "widgets/Window.h"
 class UIEngine {
+private:
+    void operator=(const UIEngine&);
+
 private:
     double mouseX, mouseY;
     int displayWidth, displayHeight;
+    std::list<Widget*> widgets;
+
+public:
+    Layout layout;
+    UIEngine(double w, double h);
+    void addWidget(Widget* widget);
+private:
     int upPressed = 0,
             downPressed = 0,
             leftPressed = 0,
@@ -16,28 +30,8 @@ private:
             mouseMiddlePressed = 0,
             zoomOutPressed = 0,
             zoomInPressed = 0;
-public:
-    UIEngine(double w, double h);
-    int isUpPressed() const;
 
-    int isDownPressed() const;
-
-    int isLeftPressed() const;
-
-    int isRightPressed() const;
-
-    int isMouseLeftPressed() const;
-
-    int isMouseRightPressed() const;
-
-    int isMouseMiddlePressed() const;
-
-    int isZoomOutPressed() const;
-
-    int isZoomInPressed() const;
-
-private:
-    std::list<Widget> widgets;
+    int largeCrosshair = 1;
     std::function<void()> onUpClickFunction = []{},
     onDownClickFunction = []{},
     onLeftClickFunction = []{},
@@ -65,9 +59,19 @@ public:
     void onMouseRightClick(std::function<void()>&);
     void onMouseMiddleClick(std::function<void()>&);
     void onMouseMove(std::function<void(int, int)>&);
+    int isUpPressed() const;
+    int isDownPressed() const;
+    int isLeftPressed() const;
+    int isRightPressed() const;
+    int isMouseLeftPressed() const;
+    int isMouseRightPressed() const;
+    int isMouseMiddlePressed() const;
+    int isZoomOutPressed() const;
+    int isZoomInPressed() const;
     void draw();
+    void drawWidget(Widget *widget, int x, int y);
 
-
+    void addWidget(Widget *widget, Widget *parent);
 };
 
 

@@ -1,7 +1,10 @@
 #include "UIEngine.h"
+#include <iostream>
 
-UIEngine::UIEngine(double w, double h) {
-    displayWidth = w, displayHeight = h;
+UIEngine::UIEngine(double w, double h):layout(w, h), displayWidth(w), displayHeight(h) {
+    layout.updateBitmap();
+    layout.setId(0);
+    widgets.push_back(&layout);
 }
 
 void UIEngine::keyCLick(int keyId) {
@@ -57,7 +60,9 @@ void UIEngine::keyRealise(int keyId) {
 }
 
 void UIEngine::mouseMove(int x, int y) {
-
+    mouseX = x;
+    mouseY = y;
+    onMouseMoveFunction(x, y);
 }
 
 void UIEngine::mouseClick(int mouseKeyId) {
@@ -160,5 +165,42 @@ int UIEngine::isZoomInPressed() const {
 }
 
 void UIEngine::draw() {
-
+    drawWidget(&layout, 0, 0);
+    al_set_target_backbuffer(al_get_current_display());
+    if (largeCrosshair) {
+        al_draw_line(0, mouseY, displayWidth, mouseY, al_map_rgb(LIGHT_ORANGE), 2);
+        al_draw_line(mouseX, 0, mouseX, displayHeight, al_map_rgb(LIGHT_ORANGE), 2);
+        // std::cout << mouseX << " " << mouseY << "\n";
+    }
 }
+
+void UIEngine::drawWidget(Widget* widget, int x, int y) {
+    al_set_target_backbuffer(al_get_current_display());
+    if (widget->isVisible()) {
+        ALLEGRO_BITMAP * bitmap = widget->getBitmap();
+        al_draw_scaled_bitmap(bitmap,
+                              0,
+                              0,
+                              al_get_bitmap_width(bitmap),
+                              al_get_bitmap_height(bitmap),
+                              x + widget->getRectangle().x,
+                              y + widget->getRectangle().y,
+                              widget->getRectangle().w,
+                              widget->getRectangle().h,
+                              0);
+    }
+    for (Widget* subWidget: widget->getSubWidgets()) drawWidget(subWidget, x + widget->getRectangle().x, y + widget->getRectangle().y);
+}
+void UIEngine::addWidget(Widget *widget, Widget* parent) {
+    widget->updateBitmap();
+    widgets.push_back(widget);
+    parent->addSubWidget(widget);
+}
+
+void UIEngine::addWidget(Widget *widget) {
+    UIEngine::addWidget(widget, &layout);
+}
+
+
+
+
