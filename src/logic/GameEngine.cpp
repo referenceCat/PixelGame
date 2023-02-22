@@ -23,9 +23,22 @@ void GameEngine::init() {
     server.setRectangle(RectangleInt{WORLD_WIDTH_IN_UNITS/ 2 - 20, WORLD_HEIGHT_IN_UNITS / 2, 16, 20});
     int serverId = environment.addStaticObject(server);
     graphicEngine->addStaticObjectSprite(server);
-    window.setId(testWindowId);
-    window.setRectangle(RectangleInt{100, 100, 300, 300});
-    uiEngine->addWidget(&window);
+    Window* window = uiEngine->addWindow(&(uiEngine->layout));
+    window->setId(TEST_WINDOW_ID);
+    window->setRectangle(RectangleDouble{10, 10, 300, 300});
+    // uiEngine->onDownClick([this](){testFunction();});
+    window->setCloseable(1);
+
+    Label* label = uiEngine->addLabel(window);
+    label->setId(TEST_LABEL_ID);
+    label->setRectangle(RectangleDouble{0, 0, 270, 32});
+    label->setText("Some text\nSome text");
+
+    TextInput* textInput = uiEngine->addTextInput(window);
+    textInput->setRectangle(RectangleDouble{0, 32, 270, 20});
+    // uiEngine->setGuiScale(2);
+    uiEngine->onMouseLeftClick([this](int x, int y){testFunction(x, y);});
+
 }
 void GameEngine::update() {
     if (uiEngine->isUpPressed() and cameraY < WORLD_HEIGHT_IN_UNITS) setCamera(cameraX, cameraY + cameraMovementSpeed * displayHeightInUnits / 1080, displayWidthInUnits, displayHeightInUnits);
@@ -42,15 +55,6 @@ void GameEngine::updateUI() {}
 void GameEngine::updateGameLogic() {}
 int GameEngine::isPaused() {return this->paused;}
 void GameEngine::setPaused(int value) {this->paused = value;}
-
-void GameEngine::mouseClick(double x, double y) {
-
-}
-
-void GameEngine::mouseRealise(double x, double y) {
-
-}
-
 
 void GameEngine::setCamera(double x, double y, double displayWidthInUnits, double displayHeightInUnits) {
     setCameraX(x);
@@ -91,4 +95,5 @@ double GameEngine::getDisplayHeightInUnits() const {
 void GameEngine::setDisplayHeightInUnits(double displayHeightInUnits) {
     GameEngine::displayHeightInUnits = displayHeightInUnits;
 }
+
 

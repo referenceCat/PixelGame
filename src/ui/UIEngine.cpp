@@ -1,5 +1,4 @@
 #include "UIEngine.h"
-#include <iostream>
 
 UIEngine::UIEngine(double w, double h):layout(w, h), displayWidth(w), displayHeight(h) {
     layout.updateBitmap();
@@ -8,6 +7,8 @@ UIEngine::UIEngine(double w, double h):layout(w, h), displayWidth(w), displayHei
 }
 
 void UIEngine::keyCLick(int keyId) {
+    if (activeInput && keyId == ALLEGRO_KEY_ENTER) activeInput->send();
+    else if (activeInput) activeInput->addChar('a');
     switch (keyId) {
         case ALLEGRO_KEY_W:
             upPressed = 1;
@@ -62,22 +63,23 @@ void UIEngine::keyRealise(int keyId) {
 void UIEngine::mouseMove(int x, int y) {
     mouseX = x;
     mouseY = y;
-    onMouseMoveFunction(x, y);
+    if (layout.mouseMove(mouseX, mouseY)) onMouseMoveFunction(x, y);
 }
 
 void UIEngine::mouseClick(int mouseKeyId) {
     switch (mouseKeyId) {
         case 1:
             mouseLeftPressed = 1;
-            onMouseLeftClickFunction();
+            activeInput = NULL;
+            if (layout.clickMouseLeft(mouseX, mouseY)) onMouseLeftClickFunction(mouseX, mouseY);
             break;
         case 2:
             mouseMiddlePressed = 1;
-            onMouseMiddleClickFunction();
+            if (layout.clickMouseMiddle(mouseX, mouseY)) onMouseMiddleClickFunction(mouseX, mouseY);
             break;
         case 3:
             mouseRightPressed = 1;
-            onMouseRightClickFunction();
+            if (layout.clickMouseRight(mouseX, mouseY)) onMouseRightClickFunction(mouseX, mouseY);
             break;
     }
 }
@@ -86,53 +88,56 @@ void UIEngine::mouseRealise(int mouseKeyId) {
     switch (mouseKeyId) {
         case 1:
             mouseLeftPressed = 0;
+            layout.realiseMouseLeft(mouseX, mouseY);
             break;
         case 2:
             mouseMiddlePressed = 0;
+            layout.realiseMouseMiddle(mouseX, mouseY);
             break;
         case 3:
             mouseRightPressed = 0;
+            layout.realiseMouseRight(mouseX, mouseY);
             break;
     }
 }
 
-void UIEngine::onUpClick(std::function<void()> &function) {
+void UIEngine::onUpClick(std::function<void()> function) {
     this->onUpClickFunction = function;
 }
 
-void UIEngine::onDownClick(std::function<void()> &function) {
+void UIEngine::onDownClick(std::function<void()> function) {
     this->onDownClickFunction = function;
 }
 
-void UIEngine::onLeftClick(std::function<void()> &function) {
+void UIEngine::onLeftClick(std::function<void()> function) {
     this->onLeftClickFunction = function;
 }
 
-void UIEngine::onRightClick(std::function<void()> &function) {
+void UIEngine::onRightClick(std::function<void()> function) {
     this->onRightClickFunction = function;
 }
 
-void UIEngine::onZoomInClick(std::function<void()> &function) {
+void UIEngine::onZoomInClick(std::function<void()> function) {
     this->onZoomInClickFunction = function;
 }
 
-void UIEngine::onZoomOutClick(std::function<void()> &function) {
+void UIEngine::onZoomOutClick(std::function<void()> function) {
     this->onZoomOutClickFunction = function;
 }
 
-void UIEngine::onMouseLeftClick(std::function<void()> &function) {
+void UIEngine::onMouseLeftClick(std::function<void(int, int)> function) {
     this->onMouseLeftClickFunction = function;
 }
 
-void UIEngine::onMouseRightClick(std::function<void()> &function) {
+void UIEngine::onMouseRightClick(std::function<void(int, int)> function) {
     this->onMouseRightClickFunction = function;
 }
 
-void UIEngine::onMouseMiddleClick(std::function<void()> &function) {
+void UIEngine::onMouseMiddleClick(std::function<void(int, int)> function) {
     this->onMouseMiddleClickFunction = function;
 }
 
-void UIEngine::onMouseMove(std::function<void(int, int)> &function) {
+void UIEngine::onMouseMove(std::function<void(int, int)> function) {
     this->onMouseMoveFunction = function;
 }
 
@@ -183,13 +188,13 @@ void UIEngine::drawWidget(Widget* widget, int x, int y) {
                               0,
                               al_get_bitmap_width(bitmap),
                               al_get_bitmap_height(bitmap),
-                              x + widget->getRectangle().x,
-                              y + widget->getRectangle().y,
-                              widget->getRectangle().w,
-                              widget->getRectangle().h,
+                              x * GUIScale + widget->getRectangle().x * GUIScale,
+                              y  * GUIScale + widget->getRectangle().y * GUIScale ,
+                              widget->getRectangle().w * GUIScale,
+                              widget->getRectangle().h * GUIScale,
                               0);
     }
-    for (Widget* subWidget: widget->getSubWidgets()) drawWidget(subWidget, x + widget->getRectangle().x, y + widget->getRectangle().y);
+    for (Widget* subWidget: widget->getSubWidgets()) drawWidget(subWidget, (x + widget->getRectangle().x  + widget->getContentX()) * 1, (y + widget->getRectangle().y  + widget->getContentY()) * 1);
 }
 void UIEngine::addWidget(Widget *widget, Widget* parent) {
     widget->updateBitmap();
@@ -197,8 +202,57 @@ void UIEngine::addWidget(Widget *widget, Widget* parent) {
     parent->addSubWidget(widget);
 }
 
-void UIEngine::addWidget(Widget *widget) {
-    UIEngine::addWidget(widget, &layout);
+Window *UIEngine::addWindow(Widget *parent) {
+    auto* window = new Window;
+    addWidget(window, parent);
+    window->onClose([this, window]{destroyWidget(window);});
+    return window;
+}
+
+int UIEngine::getGuiScale() const {
+    return GUIScale;
+}
+
+void UIEngine::setGuiScale(int guiScale) {
+    GUIScale = guiScale;
+}
+
+//Widget* UIEngine::getWidgetById(int id) {
+//    std::list<Widget*> queue;
+//    queue.push_back(&layout);
+//    for (Widget* widget: queue) {
+//        if (widget->getId() == id) {return widget;}
+//        for (Widget* subWidget: widget->getSubWidgets()) queue.push_back(subWidget);
+//    }
+//    return NULL;
+//}
+
+Widget* UIEngine::getWidgetById(int id) {
+    for (Widget* widget: widgets) if (widget->getId() == id) return widget;
+    return NULL;
+}
+
+void UIEngine::destroyWidget(Widget *widget) {
+    layout.removeSubWidget(widget);
+    std::list<Widget*> queue;
+    queue.push_back(widget);
+    for (Widget* widget: queue) {
+        for (Widget* subWidget: widget->getSubWidgets()) queue.push_back(subWidget);
+        widgets.remove(widget);
+        delete widget;
+    }
+}
+
+Label *UIEngine::addLabel(Widget *parent) {
+    auto* label = new Label;
+    addWidget(label, parent);
+    return label;
+}
+
+TextInput *UIEngine::addTextInput(Widget *parent) {
+    auto* textInput = new TextInput;
+    addWidget(textInput, parent);
+    textInput->onClick([this, textInput]{ this->activeInput=textInput; textInput->setActive(1);});
 }
 
 

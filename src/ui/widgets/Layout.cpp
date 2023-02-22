@@ -1,7 +1,7 @@
 #include "Layout.h"
 
 Layout::Layout(int w, int h) {
-    setRectangle(RectangleInt{0,0, w, h});
+    setRectangle(RectangleDouble{0,0, (double) w, (double) h});
 }
 
 void Layout::updateBitmap() {

@@ -20,16 +20,7 @@ int main(int argc, char *argv[])
 
     // Initialize the timer
     redraw_timer = al_create_timer(1.0 / FPS);
-    if (!redraw_timer) {
-        fprintf(stderr, "Failed to create timer.\n");
-        return 1;
-    }
-
     update_timer = al_create_timer(1.0 / UPS);
-    if (!update_timer) {
-        fprintf(stderr, "Failed to create timer.\n");
-        return 1;
-    }
 
     // Create the display
     // al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
@@ -50,6 +41,8 @@ int main(int argc, char *argv[])
     al_install_keyboard();
     al_install_mouse();
     al_hide_mouse_cursor(display);
+    al_init_font_addon();
+    al_init_ttf_addon();
 
     // Register event sources
     al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -100,10 +93,10 @@ int main(int argc, char *argv[])
                     uiEngine.mouseClick(event.mouse.button);
                     break;
                 case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
+                    printf("1");
                     uiEngine.mouseRealise(event.mouse.button);
                     break;
                 case ALLEGRO_EVENT_MOUSE_AXES:
-                    // std::cout << event.mouse.x;
                     uiEngine.mouseMove(event.mouse.x, event.mouse.y);
                     break;
 

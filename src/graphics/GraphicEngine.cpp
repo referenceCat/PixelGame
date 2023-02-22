@@ -154,7 +154,7 @@ int GraphicEngine::getChunkSpriteId(int x, int y) {
 }
 
 int GraphicEngine::addStaticObjectSprite(StaticObject& staticObject) {
-    int id = addStaticSprite(al_load_bitmap(staticObject.getImageFile()), staticObject.getRectangle(), MAIN_Z, 10);
+    int id = addStaticSprite(al_load_bitmap(staticObject.getImageFile()), (RectangleDouble) staticObject.getRectangle(), MAIN_Z, 10);
     staticObject.setSpriteId(id);
     return id;
 }

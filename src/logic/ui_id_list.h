@@ -1,0 +1,6 @@
+#ifndef PIXELGAME_UI_ID_LIST_H
+#define PIXELGAME_UI_ID_LIST_H
+
+#define TEST_WINDOW_ID 1
+#define TEST_LABEL_ID 2
+#endif //PIXELGAME_UI_ID_LIST_H

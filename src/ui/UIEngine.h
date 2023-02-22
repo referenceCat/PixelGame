@@ -7,19 +7,36 @@
 #include "constans.h"
 #include "widgets/Layout.h"
 #include "widgets/Window.h"
+#include "widgets/Label.h"
+#include "widgets/TextInput.h"
+
+// TODO setGUIScale();
+
 class UIEngine {
 private:
     void operator=(const UIEngine&);
 
 private:
     double mouseX, mouseY;
-    int displayWidth, displayHeight;
+    int displayWidth, displayHeight, GUIScale = 1;
+public:
+    int getGuiScale() const;
+
+    void setGuiScale(int guiScale);
+
+private:
     std::list<Widget*> widgets;
+    void addWidget(Widget* widget, Widget* parent);
+    TextInput* activeInput = NULL;
 
 public:
     Layout layout;
     UIEngine(double w, double h);
-    void addWidget(Widget* widget);
+    void destroyWidget(Widget *widget);
+    Widget *getWidgetById(int id);
+    Window* addWindow(Widget* parent);
+    Label* addLabel(Widget* parent);
+    TextInput* addTextInput(Widget* parent);
 private:
     int upPressed = 0,
             downPressed = 0,
@@ -37,11 +54,11 @@ private:
     onLeftClickFunction = []{},
     onRightClickFunction = []{},
     onZoomInClickFunction = []{},
-    onZoomOutClickFunction = []{},
-    onMouseLeftClickFunction = []{},
-    onMouseRightClickFunction = []{},
-    onMouseMiddleClickFunction = []{};
-    std::function<void(double, double)> onMouseMoveFunction = [](int x, int y){};
+    onZoomOutClickFunction = []{};
+    std::function<void(double, double)> onMouseMoveFunction = [](int x, int y){},
+    onMouseLeftClickFunction = [](int x, int y){},
+    onMouseRightClickFunction = [](int x, int y){},
+    onMouseMiddleClickFunction = [](int x, int y){};
 
 public:
     void keyCLick(int keyId);
@@ -49,16 +66,16 @@ public:
     void mouseMove(int x, int y);
     void mouseClick(int mouseKeyId);
     void mouseRealise(int mouseKeyId);
-    void onUpClick(std::function<void()>&);
-    void onDownClick(std::function<void()>&);
-    void onLeftClick(std::function<void()>&);
-    void onRightClick(std::function<void()>&);
-    void onZoomInClick(std::function<void()>&);
-    void onZoomOutClick(std::function<void()>&);
-    void onMouseLeftClick(std::function<void()>&);
-    void onMouseRightClick(std::function<void()>&);
-    void onMouseMiddleClick(std::function<void()>&);
-    void onMouseMove(std::function<void(int, int)>&);
+    void onUpClick(std::function<void()>);
+    void onDownClick(std::function<void()>);
+    void onLeftClick(std::function<void()>);
+    void onRightClick(std::function<void()>);
+    void onZoomInClick(std::function<void()>);
+    void onZoomOutClick(std::function<void()>);
+    void onMouseLeftClick(std::function<void(int, int)>);
+    void onMouseRightClick(std::function<void(int, int)>);
+    void onMouseMiddleClick(std::function<void(int, int)>);
+    void onMouseMove(std::function<void(int, int)>);
     int isUpPressed() const;
     int isDownPressed() const;
     int isLeftPressed() const;
@@ -70,8 +87,6 @@ public:
     int isZoomInPressed() const;
     void draw();
     void drawWidget(Widget *widget, int x, int y);
-
-    void addWidget(Widget *widget, Widget *parent);
 };
 
 

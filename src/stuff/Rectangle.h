@@ -7,14 +7,16 @@ struct RectangleInt{
     int x, y, w, h;
     int getCenterX();
     int getCenterY();
-    operator RectangleDouble() const;
+    int isInside(const double x, const double y);
+    explicit operator RectangleDouble() const;
 };
 
 struct RectangleDouble{
     double x, y, w, h;
     double getCenterX();
     double getCenterY();
-    operator RectangleInt() const;
+    int isInside(const double x, const double y);
+    explicit operator RectangleInt() const;
 };
 
 

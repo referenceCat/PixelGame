@@ -6,8 +6,7 @@
 #include "../ui/UIEngine.h"
 #include "environment/chunks/TestChunkGenerator.h"
 #include "environment/static_objects/server/Server.h"
-#include "../ui/widgets/Widget.h"
-#include "../ui/widgets/Window.h"
+#include "ui_id_list.h"
 
 #include "math.h"
 
@@ -22,8 +21,6 @@ private:
     cameraMovementSpeed = 25,
     cameraRescaleSpeed = 1.05,
     maxScale = 8, minScale = 2;
-    int testWindowId = 10;
-     Window window{};
 
  public:
      double getCameraX() const;
@@ -55,10 +52,9 @@ public:
     void updateUI();
     void updateGameLogic();
     int isPaused();
-    void setPaused(int value);
-    void mouseClick(double x, double y);
-    void mouseRealise(double x, double y);
     void setCamera(double x, double y, double displayWidthInUnits, double displayHeightInUnits);
+    void setPaused(int value);
+    void testFunction(int x, int y) { printf("testFunction %i %i", x, y);}
  };
 
 
