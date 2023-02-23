@@ -83,21 +83,11 @@ int main(int argc, char *argv[])
                 case ALLEGRO_EVENT_DISPLAY_CLOSE:
                     running = false;
                     break;
-                case ALLEGRO_EVENT_KEY_DOWN:
-                    uiEngine.keyCLick(event.keyboard.keycode);
+                    case ALLEGRO_EVENT_KEY_DOWN: case ALLEGRO_EVENT_KEY_UP: case ALLEGRO_EVENT_KEY_CHAR:
+                    uiEngine.keyEvent(event);
                     break;
-                case ALLEGRO_EVENT_KEY_UP:
-                    uiEngine.keyRealise(event.keyboard.keycode);
-                    break;
-                case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
-                    uiEngine.mouseClick(event.mouse.button);
-                    break;
-                case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
-                    printf("1");
-                    uiEngine.mouseRealise(event.mouse.button);
-                    break;
-                case ALLEGRO_EVENT_MOUSE_AXES:
-                    uiEngine.mouseMove(event.mouse.x, event.mouse.y);
+                case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN: case ALLEGRO_EVENT_MOUSE_BUTTON_UP: case ALLEGRO_EVENT_MOUSE_AXES:
+                    uiEngine.mouseEvent(event);
                     break;
 
                 default:

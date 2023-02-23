@@ -10,7 +10,7 @@ private:
     const char* text = "default text";
     ALLEGRO_FONT* font;
     int cursor = 0;
-    std::function<void(char*)> onSendFunction;
+    std::function<void(char*)> onSendFunction = [](char*){};
     int active = 0;
 public:
     int getActive() const;
@@ -32,6 +32,8 @@ public:
     void updateBitmap() override;
 
     void addChar(char c);
+
+    void deleteChar();
 
     void onSend(std::function<void(char*)>);
 

@@ -63,6 +63,8 @@ private:
 public:
     void keyCLick(int keyId);
     void keyRealise(int keyId);
+    void keyEvent(ALLEGRO_EVENT event);
+    void mouseEvent(ALLEGRO_EVENT event);
     void mouseMove(int x, int y);
     void mouseClick(int mouseKeyId);
     void mouseRealise(int mouseKeyId);

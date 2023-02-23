@@ -9,31 +9,33 @@ UIEngine::UIEngine(double w, double h):layout(w, h), displayWidth(w), displayHei
 void UIEngine::keyCLick(int keyId) {
     if (activeInput && keyId == ALLEGRO_KEY_ENTER) activeInput->send();
     else if (activeInput) activeInput->addChar('a');
-    switch (keyId) {
-        case ALLEGRO_KEY_W:
-            upPressed = 1;
-            onUpClickFunction();
-            break;
-        case ALLEGRO_KEY_S:
-            downPressed = 1;
-            onDownClickFunction();
-            break;
-        case ALLEGRO_KEY_A:
-            leftPressed = 1;
-            onLeftClickFunction();
-            break;
-        case ALLEGRO_KEY_D:
-            rightPressed = 1;
-            onRightClickFunction();
-            break;
-        case ALLEGRO_KEY_EQUALS:
-            zoomInPressed = 1;
-            onZoomInClickFunction();
-            break;
-        case ALLEGRO_KEY_MINUS:
-            zoomOutPressed = 1;
-            onZoomOutClickFunction();
-            break;
+    else {
+        switch (keyId) {
+            case ALLEGRO_KEY_W:
+                upPressed = 1;
+                onUpClickFunction();
+                break;
+            case ALLEGRO_KEY_S:
+                downPressed = 1;
+                onDownClickFunction();
+                break;
+            case ALLEGRO_KEY_A:
+                leftPressed = 1;
+                onLeftClickFunction();
+                break;
+            case ALLEGRO_KEY_D:
+                rightPressed = 1;
+                onRightClickFunction();
+                break;
+            case ALLEGRO_KEY_EQUALS:
+                zoomInPressed = 1;
+                onZoomInClickFunction();
+                break;
+            case ALLEGRO_KEY_MINUS:
+                zoomOutPressed = 1;
+                onZoomOutClickFunction();
+                break;
+        }
     }
 }
 
@@ -70,7 +72,10 @@ void UIEngine::mouseClick(int mouseKeyId) {
     switch (mouseKeyId) {
         case 1:
             mouseLeftPressed = 1;
-            activeInput = NULL;
+            if (activeInput) {
+                activeInput->setActive(0);
+                activeInput = NULL;
+            }
             if (layout.clickMouseLeft(mouseX, mouseY)) onMouseLeftClickFunction(mouseX, mouseY);
             break;
         case 2:
@@ -253,6 +258,46 @@ TextInput *UIEngine::addTextInput(Widget *parent) {
     auto* textInput = new TextInput;
     addWidget(textInput, parent);
     textInput->onClick([this, textInput]{ this->activeInput=textInput; textInput->setActive(1);});
+    return textInput;
+}
+
+void UIEngine::keyEvent(ALLEGRO_EVENT event) {
+    // TODO
+    if (activeInput) {
+        if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
+            switch (event.keyboard.keycode) {
+                case ALLEGRO_KEY_ENTER:
+                    activeInput->send();
+                    activeInput->setActive(0);
+                    activeInput = NULL;
+                    break;
+                case ALLEGRO_KEY_BACKSPACE:
+                    activeInput->deleteChar();
+                    break;
+                case ALLEGRO_KEY_RIGHT:
+                    activeInput->setCursor(activeInput->getCursor()+1);
+                    break;
+                case ALLEGRO_KEY_LEFT:
+                    activeInput->setCursor(activeInput->getCursor()-1);
+                    break;
+            }
+        } else if (event.type == ALLEGRO_EVENT_KEY_CHAR && event.keyboard.unichar < 127 && event.keyboard.unichar != 13 && event.keyboard.unichar != 0) {
+            // printf("%i", event.keyboard.unichar);
+            activeInput->addChar((char) event.keyboard.unichar);
+        }
+    }
+
+}
+
+void UIEngine::mouseEvent(ALLEGRO_EVENT event) {
+    // TODO
+    if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
+        mouseClick(event.mouse.button);
+    } else if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
+        mouseMove(event.mouse.x, event.mouse.y);
+    } else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
+        mouseRealise(event.mouse.button);
+    }
 }
 
 

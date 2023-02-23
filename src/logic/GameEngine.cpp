@@ -12,7 +12,7 @@ void GameEngine::init() {
     environment.generateChunk(0, 0, testChunkGenerator);
     graphicEngine->addChunkSprite(environment.getChunk(0, 0), 0, 0);
 
-    for (int i = 0; i < WORLD_HEIGHT_IN_CHUNKS / 2 + 16; i++) for (int j = WORLD_WIDTH_IN_CHUNKS / 2 - 3; j < WORLD_WIDTH_IN_CHUNKS / 2 + 3; j++) {
+    for (int i = 0; i < WORLD_HEIGHT_IN_CHUNKS / 2 + 3; i++) for (int j = WORLD_WIDTH_IN_CHUNKS / 2 - 3; j < WORLD_WIDTH_IN_CHUNKS / 2 + 3; j++) {
             environment.generateChunk(j, i, testChunkGenerator);
             graphicEngine->addChunkSprite(environment.getChunk(j, i), j, i);
         }
@@ -35,7 +35,8 @@ void GameEngine::init() {
     label->setText("Some text\nSome text");
 
     TextInput* textInput = uiEngine->addTextInput(window);
-    textInput->setRectangle(RectangleDouble{0, 32, 270, 20});
+    textInput->setRectangle(RectangleDouble{0, 32, 270, 100});
+    textInput->onSend([](char* text){ printf("%s", text); });
     // uiEngine->setGuiScale(2);
     uiEngine->onMouseLeftClick([this](int x, int y){testFunction(x, y);});
 
