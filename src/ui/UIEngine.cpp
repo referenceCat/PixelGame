@@ -4,175 +4,12 @@ UIEngine::UIEngine(double w, double h):layout(w, h), displayWidth(w), displayHei
     layout.updateBitmap();
     layout.setId(0);
     widgets.push_back(&layout);
+    for (int i = 0; i < ALLEGRO_KEY_MAX + 1; i++) keyDownFunctions[i] = []{};
+    for (int i = 0; i < ALLEGRO_KEY_MAX + 1; i++) keyUpFunctions[i] = []{};
+    for (int i = 0; i < 10 + 1; i++) mouseButtonDownFunctions[i] = [](int, int, int){};
+    for (int i = 0; i < 10 + 1; i++) mouseButtonUpFunctions[i] = [](int, int, int){};
 }
 
-void UIEngine::keyCLick(int keyId) {
-    if (activeInput && keyId == ALLEGRO_KEY_ENTER) activeInput->send();
-    else if (activeInput) activeInput->addChar('a');
-    else {
-        switch (keyId) {
-            case ALLEGRO_KEY_W:
-                upPressed = 1;
-                onUpClickFunction();
-                break;
-            case ALLEGRO_KEY_S:
-                downPressed = 1;
-                onDownClickFunction();
-                break;
-            case ALLEGRO_KEY_A:
-                leftPressed = 1;
-                onLeftClickFunction();
-                break;
-            case ALLEGRO_KEY_D:
-                rightPressed = 1;
-                onRightClickFunction();
-                break;
-            case ALLEGRO_KEY_EQUALS:
-                zoomInPressed = 1;
-                onZoomInClickFunction();
-                break;
-            case ALLEGRO_KEY_MINUS:
-                zoomOutPressed = 1;
-                onZoomOutClickFunction();
-                break;
-        }
-    }
-}
-
-void UIEngine::keyRealise(int keyId) {
-    switch (keyId) {
-        case ALLEGRO_KEY_W:
-            upPressed = 0;
-            break;
-        case ALLEGRO_KEY_S:
-            downPressed = 0;
-            break;
-        case ALLEGRO_KEY_A:
-            leftPressed = 0;
-            break;
-        case ALLEGRO_KEY_D:
-            rightPressed = 0;
-            break;
-        case ALLEGRO_KEY_EQUALS:
-            zoomInPressed = 0;
-            break;
-        case ALLEGRO_KEY_MINUS:
-            zoomOutPressed = 0;
-            break;
-    }
-}
-
-void UIEngine::mouseMove(int x, int y) {
-    mouseX = x;
-    mouseY = y;
-    if (layout.mouseMove(mouseX, mouseY)) onMouseMoveFunction(x, y);
-}
-
-void UIEngine::mouseClick(int mouseKeyId) {
-    switch (mouseKeyId) {
-        case 1:
-            mouseLeftPressed = 1;
-            if (activeInput) {
-                activeInput->setActive(0);
-                activeInput = NULL;
-            }
-            if (layout.clickMouseLeft(mouseX, mouseY)) onMouseLeftClickFunction(mouseX, mouseY);
-            break;
-        case 2:
-            mouseMiddlePressed = 1;
-            if (layout.clickMouseMiddle(mouseX, mouseY)) onMouseMiddleClickFunction(mouseX, mouseY);
-            break;
-        case 3:
-            mouseRightPressed = 1;
-            if (layout.clickMouseRight(mouseX, mouseY)) onMouseRightClickFunction(mouseX, mouseY);
-            break;
-    }
-}
-
-void UIEngine::mouseRealise(int mouseKeyId) {
-    switch (mouseKeyId) {
-        case 1:
-            mouseLeftPressed = 0;
-            layout.realiseMouseLeft(mouseX, mouseY);
-            break;
-        case 2:
-            mouseMiddlePressed = 0;
-            layout.realiseMouseMiddle(mouseX, mouseY);
-            break;
-        case 3:
-            mouseRightPressed = 0;
-            layout.realiseMouseRight(mouseX, mouseY);
-            break;
-    }
-}
-
-void UIEngine::onUpClick(std::function<void()> function) {
-    this->onUpClickFunction = function;
-}
-
-void UIEngine::onDownClick(std::function<void()> function) {
-    this->onDownClickFunction = function;
-}
-
-void UIEngine::onLeftClick(std::function<void()> function) {
-    this->onLeftClickFunction = function;
-}
-
-void UIEngine::onRightClick(std::function<void()> function) {
-    this->onRightClickFunction = function;
-}
-
-void UIEngine::onZoomInClick(std::function<void()> function) {
-    this->onZoomInClickFunction = function;
-}
-
-void UIEngine::onZoomOutClick(std::function<void()> function) {
-    this->onZoomOutClickFunction = function;
-}
-
-void UIEngine::onMouseLeftClick(std::function<void(int, int)> function) {
-    this->onMouseLeftClickFunction = function;
-}
-
-void UIEngine::onMouseRightClick(std::function<void(int, int)> function) {
-    this->onMouseRightClickFunction = function;
-}
-
-void UIEngine::onMouseMiddleClick(std::function<void(int, int)> function) {
-    this->onMouseMiddleClickFunction = function;
-}
-
-void UIEngine::onMouseMove(std::function<void(int, int)> function) {
-    this->onMouseMoveFunction = function;
-}
-
-int UIEngine::isUpPressed() const {
-    return upPressed;
-}
-int UIEngine::isDownPressed() const {
-    return downPressed;
-}
-int UIEngine::isLeftPressed() const {
-    return leftPressed;
-}
-int UIEngine::isRightPressed() const {
-    return rightPressed;
-}
-int UIEngine::isMouseLeftPressed() const {
-    return mouseLeftPressed;
-}
-int UIEngine::isMouseRightPressed() const {
-    return mouseRightPressed;
-}
-int UIEngine::isMouseMiddlePressed() const {
-    return mouseMiddlePressed;
-}
-int UIEngine::isZoomOutPressed() const {
-    return zoomOutPressed;
-}
-int UIEngine::isZoomInPressed() const {
-    return zoomInPressed;
-}
 
 void UIEngine::draw() {
     drawWidget(&layout, 0, 0);
@@ -201,6 +38,7 @@ void UIEngine::drawWidget(Widget* widget, int x, int y) {
     }
     for (Widget* subWidget: widget->getSubWidgets()) drawWidget(subWidget, (x + widget->getRectangle().x  + widget->getContentX()) * 1, (y + widget->getRectangle().y  + widget->getContentY()) * 1);
 }
+
 void UIEngine::addWidget(Widget *widget, Widget* parent) {
     widget->updateBitmap();
     widgets.push_back(widget);
@@ -221,16 +59,6 @@ int UIEngine::getGuiScale() const {
 void UIEngine::setGuiScale(int guiScale) {
     GUIScale = guiScale;
 }
-
-//Widget* UIEngine::getWidgetById(int id) {
-//    std::list<Widget*> queue;
-//    queue.push_back(&layout);
-//    for (Widget* widget: queue) {
-//        if (widget->getId() == id) {return widget;}
-//        for (Widget* subWidget: widget->getSubWidgets()) queue.push_back(subWidget);
-//    }
-//    return NULL;
-//}
 
 Widget* UIEngine::getWidgetById(int id) {
     for (Widget* widget: widgets) if (widget->getId() == id) return widget;
@@ -257,7 +85,7 @@ Label *UIEngine::addLabel(Widget *parent) {
 TextInput *UIEngine::addTextInput(Widget *parent) {
     auto* textInput = new TextInput;
     addWidget(textInput, parent);
-    textInput->onClick([this, textInput]{ this->activeInput=textInput; textInput->setActive(1);});
+    textInput->onMouseButtonDown([this, textInput](int,int,int){ this->activeInput=textInput; textInput->setActive(1);}, 1);
     return textInput;
 }
 
@@ -285,19 +113,68 @@ void UIEngine::keyEvent(ALLEGRO_EVENT event) {
             // printf("%i", event.keyboard.unichar);
             activeInput->addChar((char) event.keyboard.unichar);
         }
+        return;
+    }
+
+    if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
+        keysDown[event.keyboard.keycode] = 1;
+        keyDownFunctions[event.keyboard.keycode]();
+    }
+
+    if (event.type == ALLEGRO_EVENT_KEY_UP) {
+        keysDown[event.keyboard.keycode] = 0;
+        keyUpFunctions[event.keyboard.keycode]();
     }
 
 }
 
 void UIEngine::mouseEvent(ALLEGRO_EVENT event) {
     // TODO
-    if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
-        mouseClick(event.mouse.button);
-    } else if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
-        mouseMove(event.mouse.x, event.mouse.y);
+    if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
+        mouseX = event.mouse.x;
+        mouseY = event.mouse.y;
+        if (layout.mouseMove(mouseX, mouseY)) mouseMoveFunction(mouseX, mouseY);
+    } else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
+        if (event.mouse.button == 1 && activeInput) {
+            printf("unactive");
+            activeInput->setActive(0);
+            activeInput = NULL;
+        }
+
+        if (layout.mouseButtonDown(event.mouse.button, mouseX, mouseY)) {
+            mouseButtonDownFunctions[event.mouse.button](event.mouse.button, mouseX, mouseY);
+        }
     } else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
-        mouseRealise(event.mouse.button);
+        if (layout.mouseButtonUp(event.mouse.button, mouseX, mouseY)) mouseButtonUpFunctions[event.mouse.button](event.mouse.button, mouseX, mouseY);
     }
+}
+
+void UIEngine::onKeyUp(std::function<void()> function, int keycode) {
+    keyUpFunctions[keycode] = function;
+}
+
+void UIEngine::onKeyDown(std::function<void()> function, int keycode) {
+    keyDownFunctions[keycode] = function;
+}
+
+int UIEngine::isKeyDown(int keycode) {
+    return keysDown[keycode];
+}
+
+void UIEngine::onMouseButtonUp(std::function<void(int, int, int)> function, int keycode) {
+    mouseButtonUpFunctions[keycode] = function;
+}
+
+void UIEngine::onMouseButtonDown(std::function<void(int, int, int)> function, int keycode) {
+    mouseButtonUpFunctions[keycode] = function;
+}
+
+void UIEngine::onMouseMove(std::function<void(int, int)> function) {
+    mouseMoveFunction = function;
+}
+
+int UIEngine::isMouseButtonDown(int keycode) {
+    return mouseButtonsDown[keycode];
 }
 
 

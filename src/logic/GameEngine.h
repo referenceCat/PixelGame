@@ -7,6 +7,7 @@
 #include "environment/chunks/TestChunkGenerator.h"
 #include "environment/static_objects/server/Server.h"
 #include "ui_id_list.h"
+#include "../ui/FunctionalKey.h"
 
 #include "math.h"
 

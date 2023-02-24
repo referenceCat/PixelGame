@@ -9,6 +9,8 @@
 #include "widgets/Window.h"
 #include "widgets/Label.h"
 #include "widgets/TextInput.h"
+#include "FunctionalKey.h"
+#include "algorithm"
 
 // TODO setGUIScale();
 
@@ -38,55 +40,28 @@ public:
     Label* addLabel(Widget* parent);
     TextInput* addTextInput(Widget* parent);
 private:
-    int upPressed = 0,
-            downPressed = 0,
-            leftPressed = 0,
-            rightPressed = 0,
-            mouseLeftPressed = 0,
-            mouseRightPressed = 0,
-            mouseMiddlePressed = 0,
-            zoomOutPressed = 0,
-            zoomInPressed = 0;
+    int keysDown[ALLEGRO_KEY_MAX] = {};
+    std::function<void()> keyDownFunctions[ALLEGRO_KEY_MAX] = {};
+    std::function<void()> keyUpFunctions[ALLEGRO_KEY_MAX] = {};
+
+    int mouseButtonsDown[10] = {};
+    std::function<void(int, int, int)> mouseButtonDownFunctions[10] = {};
+    std::function<void(int, int, int)> mouseButtonUpFunctions[10] = {};
+    std::function<void(int, int)> mouseMoveFunction = [](int, int){};
 
     int largeCrosshair = 1;
-    std::function<void()> onUpClickFunction = []{},
-    onDownClickFunction = []{},
-    onLeftClickFunction = []{},
-    onRightClickFunction = []{},
-    onZoomInClickFunction = []{},
-    onZoomOutClickFunction = []{};
-    std::function<void(double, double)> onMouseMoveFunction = [](int x, int y){},
-    onMouseLeftClickFunction = [](int x, int y){},
-    onMouseRightClickFunction = [](int x, int y){},
-    onMouseMiddleClickFunction = [](int x, int y){};
 
 public:
-    void keyCLick(int keyId);
-    void keyRealise(int keyId);
     void keyEvent(ALLEGRO_EVENT event);
+    void onKeyUp(std::function<void()>, int);
+    void onKeyDown(std::function<void()>, int);
+    int isKeyDown(int keycode);
     void mouseEvent(ALLEGRO_EVENT event);
-    void mouseMove(int x, int y);
-    void mouseClick(int mouseKeyId);
-    void mouseRealise(int mouseKeyId);
-    void onUpClick(std::function<void()>);
-    void onDownClick(std::function<void()>);
-    void onLeftClick(std::function<void()>);
-    void onRightClick(std::function<void()>);
-    void onZoomInClick(std::function<void()>);
-    void onZoomOutClick(std::function<void()>);
-    void onMouseLeftClick(std::function<void(int, int)>);
-    void onMouseRightClick(std::function<void(int, int)>);
-    void onMouseMiddleClick(std::function<void(int, int)>);
+    void onMouseButtonUp(std::function<void(int, int, int)>, int);
+    void onMouseButtonDown(std::function<void(int, int, int)>, int);
     void onMouseMove(std::function<void(int, int)>);
-    int isUpPressed() const;
-    int isDownPressed() const;
-    int isLeftPressed() const;
-    int isRightPressed() const;
-    int isMouseLeftPressed() const;
-    int isMouseRightPressed() const;
-    int isMouseMiddlePressed() const;
-    int isZoomOutPressed() const;
-    int isZoomInPressed() const;
+    int isMouseButtonDown(int);
+
     void draw();
     void drawWidget(Widget *widget, int x, int y);
 };

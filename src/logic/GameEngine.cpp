@@ -7,7 +7,8 @@ GameEngine::GameEngine(GraphicEngine &graphicEngine, UIEngine &uiEngine) {
 
 void GameEngine::init() {
     // TODO
-
+    FunctionalKey::MOVE_UP.clickFunction = []{printf("move up click");};
+    FunctionalKey::MOVE_UP.name = "new move up name";
     TestChunkGenerator testChunkGenerator = TestChunkGenerator();
     environment.generateChunk(0, 0, testChunkGenerator);
     graphicEngine->addChunkSprite(environment.getChunk(0, 0), 0, 0);
@@ -38,16 +39,17 @@ void GameEngine::init() {
     textInput->setRectangle(RectangleDouble{0, 32, 270, 100});
     textInput->onSend([](char* text){ printf("%s", text); });
     // uiEngine->setGuiScale(2);
-    uiEngine->onMouseLeftClick([this](int x, int y){testFunction(x, y);});
+    // uiEngine->onMouseLeftClick([this](int x, int y){testFunction(x, y);});
+    uiEngine->onKeyDown([]{ printf("1");}, ALLEGRO_KEY_P);
 
 }
 void GameEngine::update() {
-    if (uiEngine->isUpPressed() and cameraY < WORLD_HEIGHT_IN_UNITS) setCamera(cameraX, cameraY + cameraMovementSpeed * displayHeightInUnits / 1080, displayWidthInUnits, displayHeightInUnits);
-    if (uiEngine->isDownPressed() and cameraY > 0) setCamera(cameraX, cameraY - cameraMovementSpeed * displayHeightInUnits / 1080, displayWidthInUnits, displayHeightInUnits);
-    if (uiEngine->isLeftPressed() and cameraX > 0) setCamera(cameraX - cameraMovementSpeed * displayWidthInUnits / 1920, cameraY, displayWidthInUnits, displayHeightInUnits);
-    if (uiEngine->isRightPressed() and cameraX < WORLD_WIDTH_IN_UNITS) setCamera(cameraX + cameraMovementSpeed * displayWidthInUnits / 1920, cameraY, displayWidthInUnits, displayHeightInUnits);
-    if (uiEngine->isZoomInPressed() and 1920 / displayWidthInUnits < maxScale) setCamera(cameraX, cameraY,  displayWidthInUnits / cameraRescaleSpeed, displayHeightInUnits / cameraRescaleSpeed);
-    if (uiEngine->isZoomOutPressed() and 1920 / displayWidthInUnits > minScale) setCamera(cameraX, cameraY,  displayWidthInUnits * cameraRescaleSpeed, displayHeightInUnits * cameraRescaleSpeed);
+    if (uiEngine->isKeyDown(ALLEGRO_KEY_W) and cameraY < WORLD_HEIGHT_IN_UNITS) setCamera(cameraX, cameraY + cameraMovementSpeed * displayHeightInUnits / 1080, displayWidthInUnits, displayHeightInUnits);
+    if (uiEngine->isKeyDown(ALLEGRO_KEY_S) and cameraY > 0) setCamera(cameraX, cameraY - cameraMovementSpeed * displayHeightInUnits / 1080, displayWidthInUnits, displayHeightInUnits);
+    if (uiEngine->isKeyDown(ALLEGRO_KEY_A) and cameraX > 0) setCamera(cameraX - cameraMovementSpeed * displayWidthInUnits / 1920, cameraY, displayWidthInUnits, displayHeightInUnits);
+    if (uiEngine->isKeyDown(ALLEGRO_KEY_D) and cameraX < WORLD_WIDTH_IN_UNITS) setCamera(cameraX + cameraMovementSpeed * displayWidthInUnits / 1920, cameraY, displayWidthInUnits, displayHeightInUnits);
+    if (uiEngine->isKeyDown(ALLEGRO_KEY_EQUALS) and 1920 / displayWidthInUnits < maxScale) setCamera(cameraX, cameraY,  displayWidthInUnits / cameraRescaleSpeed, displayHeightInUnits / cameraRescaleSpeed);
+    if (uiEngine->isKeyDown(ALLEGRO_KEY_MINUS) and 1920 / displayWidthInUnits > minScale) setCamera(cameraX, cameraY,  displayWidthInUnits * cameraRescaleSpeed, displayHeightInUnits * cameraRescaleSpeed);
     updateUI();
     if (!isPaused()) updateGameLogic();
 }

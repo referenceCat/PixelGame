@@ -1,9 +1,5 @@
 #include "Widget.h"
 
-void Widget::onClick(std::function<void()> function) {
-    this->onClickFunction = function;
-}
-
 const RectangleDouble &Widget::getRectangle() const {
     return (RectangleDouble) rectangle;
 }
@@ -72,86 +68,35 @@ int Widget::getContentY() {
     return 0;
 }
 
-int Widget::clickMouseLeft(double x, double y) {
+int Widget::mouseButtonDown(int keycode, int x, int y) {
     for (Widget* subWidget: subWidgets) {
         RectangleDouble subWidgetRect = subWidget->getRectangle();
         subWidgetRect.x += getContentX();
         subWidgetRect.y += getContentY();
         if (subWidget->isVisible() && subWidgetRect.isInside(x, y)) {
-            subWidget->clickMouseLeft(x - subWidgetRect.x, y - subWidgetRect.y);
+            subWidget->mouseButtonDown(keycode, x - subWidgetRect.x - getContentX(), y - subWidgetRect.y - getContentY());
             return 0;
         }
     }
-    onClickFunction();
+    mouseButtonDownFunctions[keycode](keycode, x, y);
     return 1;
 }
 
-int Widget::clickMouseRight(double x, double y) {
+int Widget::mouseButtonUp(int keycode, int x, int y) {
     for (Widget* subWidget: subWidgets) {
         RectangleDouble subWidgetRect = subWidget->getRectangle();
         subWidgetRect.x += getContentX();
         subWidgetRect.y += getContentY();
         if (subWidget->isVisible() && subWidgetRect.isInside(x, y)) {
-            subWidget->clickMouseRight(x - subWidgetRect.x, y - subWidgetRect.y);
+            subWidget->mouseButtonUp(keycode, x - subWidgetRect.x - getContentX(), y - subWidgetRect.y - getContentY());
             return 0;
         }
     }
+    mouseButtonUpFunctions[keycode](keycode, x, y);
     return 1;
 }
 
-int Widget::clickMouseMiddle(double x, double y) {
-    for (Widget* subWidget: subWidgets) {
-        RectangleDouble subWidgetRect = subWidget->getRectangle();
-        subWidgetRect.x += getContentX();
-        subWidgetRect.y += getContentY();
-        if (subWidget->isVisible() && subWidgetRect.isInside(x, y)) {
-            subWidget->clickMouseLeft(x - subWidgetRect.x, y - subWidgetRect.y);
-            return 0;
-        }
-    }
-    return 1;
-}
-
-int Widget::realiseMouseLeft(double x, double y) {
-    for (Widget* subWidget: subWidgets) {
-        RectangleDouble subWidgetRect = subWidget->getRectangle();
-        subWidgetRect.x += getContentX();
-        subWidgetRect.y += getContentY();
-        if (subWidget->isVisible() && subWidgetRect.isInside(x, y)) {
-            subWidget->realiseMouseLeft(x - subWidgetRect.x, y - subWidgetRect.y);
-            return 0;
-        }
-    }
-    return 1;
-}
-
-int Widget::realiseMouseRight(double x, double y) {
-    for (Widget* subWidget: subWidgets) {
-        RectangleDouble subWidgetRect = subWidget->getRectangle();
-        subWidgetRect.x += getContentX();
-        subWidgetRect.y += getContentY();
-        if (subWidget->isVisible() && subWidgetRect.isInside(x, y)) {
-            subWidget->realiseMouseRight(x - subWidgetRect.x, y - subWidgetRect.y);
-            return 0;
-        }
-    }
-    return 1;
-}
-
-int Widget::realiseMouseMiddle(double x, double y) {
-    for (Widget* subWidget: subWidgets) {
-        RectangleDouble subWidgetRect = subWidget->getRectangle();
-        subWidgetRect.x += getContentX();
-        subWidgetRect.y += getContentY();
-        if (subWidget->isVisible() && subWidgetRect.isInside(x, y)) {
-            subWidget->realiseMouseMiddle(x - subWidgetRect.x, y - subWidgetRect.y);
-            return 0;
-        }
-    }
-    return 1;
-}
-
-int Widget::mouseMove(double x, double y) {
+int Widget::mouseMove(int x, int y) {
     for (Widget* subWidget: subWidgets) {
         RectangleDouble subWidgetRect = subWidget->getRectangle();
         subWidgetRect.x += getContentX();
@@ -171,5 +116,23 @@ void Widget::removeSubWidget(Widget *widget) {
 Widget::~Widget() {
     al_destroy_bitmap(getBitmap());
 }
+
+void Widget::onMouseButtonUp(std::function<void(int, int, int)> function, int keycode) {
+    mouseButtonUpFunctions[keycode] = function;
+}
+
+void Widget::onMouseButtonDown(std::function<void(int, int, int)> function, int keycode) {
+    mouseButtonDownFunctions[keycode] = function;
+}
+
+void Widget::onMouseMove(std::function<void(int, int)> function) {
+    mouseMoveFunction = function;
+}
+
+Widget::Widget() {
+    for (int i = 0; i < 10 + 1; i++) mouseButtonDownFunctions[i] = [](int, int, int){};
+    for (int i = 0; i < 10 + 1; i++) mouseButtonUpFunctions[i] = [](int, int, int){};
+}
+
 
 

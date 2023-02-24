@@ -23,10 +23,13 @@ private:
 
 private:
     int visible = 1;
-    std::function<void()> onClickFunction = []{};
+    int mouseButtonsDown[10] = {};
+    std::function<void(int, int, int)> mouseButtonDownFunctions[10] = {};
+    std::function<void(int, int, int)> mouseButtonUpFunctions[10] = {};
+    std::function<void(int, int)> mouseMoveFunction = [](int, int){};
 
 public:
-    void onClick(std::function<void()>);
+    Widget();
     const RectangleDouble &getRectangle() const;
     virtual void setRectangle(RectangleDouble rectangle);
     void addSubWidget(Widget* subWidget);
@@ -38,19 +41,17 @@ public:
     void show();
     void hide();
     int isVisible();
-    virtual int clickMouseLeft(double x, double y);
-    virtual int clickMouseRight(double x, double y);
-    virtual int clickMouseMiddle(double x, double y);
-    virtual int realiseMouseLeft(double x, double y);
-    virtual int realiseMouseRight(double x, double y);
-    virtual int realiseMouseMiddle(double x, double y);
-    virtual int mouseMove(double x, double y);
+    void onMouseButtonUp(std::function<void(int, int, int)>, int);
+    void onMouseButtonDown(std::function<void(int, int, int)>, int);
+    void onMouseMove(std::function<void(int, int)>);
+    virtual int mouseButtonDown(int keycode, int x, int y);
+    virtual int mouseButtonUp(int keycode, int x, int y);
+    virtual int mouseMove(int x, int y);
     virtual void updateBitmap();
     virtual void update();
     virtual int getContentX();
     virtual int getContentY();
     virtual ~Widget();
-
 };
 
 

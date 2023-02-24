@@ -17,9 +17,9 @@ public:
     void updateBitmap() override;
     int getContentX() override;
     int getContentY() override;
-    int clickMouseLeft(double x, double y) override;
-    int realiseMouseLeft(double x, double y) override;
-    int mouseMove(double x, double y) override;
+    int mouseButtonDown(int keycode, int x, int y) override;
+    int mouseButtonUp(int keycode,int x, int y) override;
+    int mouseMove(int x, int y) override;
     void onClose(std::function<void()>);
 };
 

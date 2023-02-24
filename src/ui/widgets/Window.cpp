@@ -44,8 +44,9 @@ int Window::getContentY() {
     return 8 + 20;
 }
 
-int Window::clickMouseLeft(double x, double y) {
-    if (!Widget::clickMouseLeft(x, y)) return 0;
+int Window::mouseButtonDown(int keycode, int x, int y) {
+    if (!Widget::mouseButtonDown(keycode, x, y)) return 0;
+    if (keycode != 1) return 1;
     if (RectangleDouble{getRectangle().w - 16, 6, 10, 10}.isInside(x, y)) {
         hide();
         onCloseFunction();
@@ -59,12 +60,12 @@ int Window::clickMouseLeft(double x, double y) {
     return 1;
 }
 
-int Window::realiseMouseLeft(double x, double y) {
-    inMovement = 0;
-    return Widget::realiseMouseLeft(x, y);
+int Window::mouseButtonUp(int keycode, int x, int y) {
+    if (keycode == 1) inMovement = 0;
+    return Widget::mouseButtonUp(keycode, x, y);
 }
 
-int Window::mouseMove(double x, double y) {
+int Window::mouseMove(int x, int y) {
     if (inMovement) {
         printf("in move");
         RectangleDouble rect = getRectangle();
