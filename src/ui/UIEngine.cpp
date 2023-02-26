@@ -177,6 +177,12 @@ int UIEngine::isMouseButtonDown(int keycode) {
     return mouseButtonsDown[keycode];
 }
 
+Button *UIEngine::addButton(Widget *parent) {
+    auto* button = new Button;
+    addWidget(button, parent);
+    return button;
+}
+
 
 
 

@@ -1,5 +1,5 @@
 #include "TextInput.h"
-#include "../constans.h"
+#include "../../../data/ui/colors.h"
 
 char *TextInput::getText() const {
     return strdup(text);

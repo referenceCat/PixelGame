@@ -6,7 +6,7 @@
 #include "allegro5/allegro_primitives.h"
 #include "allegro5/allegro_font.h"
 #include "allegro5/allegro_ttf.h"
-#include "../constans.h"
+#include "../../../data/ui/colors.h"
 
 // TODO auto-resizeable rect
 class Label: public Widget{

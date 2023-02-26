@@ -36,11 +36,16 @@ void GameEngine::init() {
     label->setText("Some text\nSome text");
 
     TextInput* textInput = uiEngine->addTextInput(window);
-    textInput->setRectangle(RectangleDouble{0, 32, 270, 100});
+    textInput->setRectangle(RectangleDouble{0, 32, 270, 20});
     textInput->onSend([](char* text){ printf("%s", text); });
     // uiEngine->setGuiScale(2);
     // uiEngine->onMouseLeftClick([this](int x, int y){testFunction(x, y);});
     uiEngine->onKeyDown([]{ printf("1");}, ALLEGRO_KEY_P);
+
+    Button* button = uiEngine->addButton(window);
+    button->setRectangle({50, 60, 100, 30});
+    button->onMouseButtonDown([](int, int, int){ printf("button click");}, 1);
+    button->setText("button text");
 
 }
 void GameEngine::update() {

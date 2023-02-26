@@ -4,13 +4,14 @@
 #include <list>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
-#include "constans.h"
+#include "../../data/ui/colors.h"
 #include "widgets/Layout.h"
 #include "widgets/Window.h"
 #include "widgets/Label.h"
 #include "widgets/TextInput.h"
 #include "FunctionalKey.h"
 #include "algorithm"
+#include "widgets/Button.h"
 
 // TODO setGUIScale();
 
@@ -39,6 +40,7 @@ public:
     Window* addWindow(Widget* parent);
     Label* addLabel(Widget* parent);
     TextInput* addTextInput(Widget* parent);
+    Button* addButton(Widget* parent);
 private:
     int keysDown[ALLEGRO_KEY_MAX] = {};
     std::function<void()> keyDownFunctions[ALLEGRO_KEY_MAX] = {};
